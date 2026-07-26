@@ -1,0 +1,1144 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>오늘의 마음 💌</title>
+<meta property="og:title" content="봉인된 마음이 도착했어요 💌">
+<meta property="og:description" content="둘만 아는 숫자로 열어봐">
+<meta property="og:image" content="https://winter-gun.github.io/today-card/envelope.png">
+<meta property="og:url" content="https://winter-gun.github.io/today-card/">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#fdf3f5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fdf3f5; --bg2:#fbe7ed; --ink:#463539; --ink2:#8a6f76;
+    --card:#fffbfc; --line:#f2dbe1; --accent:#e8788f; --accent2:#f2a5b5;
+    --warn:#d9776f; --shadow:0 12px 40px rgba(190,100,125,.16); --r:22px;
+    --field:#fdf5f7; --chipbg:#fbe7ec; --ghostbg:#f8e4ea;
+    --cardg1:#fffbfc; --cardg2:#fdeef2; --cravebg:#fff2f5; --missbg:#fae3e9;
+    --memobg:#fff; --stampbg:#fff; --modalbg:#fffbfc; --track:#fae3e9;
+    --gridc:#f3d9de; --radarfill:rgba(232,120,143,.24);
+    --yesbg:#eef4e8; --yesbd:#d6e4c8; --yestx:#5f7d47;
+    --nobg:#fbeae4; --nobd:#f0d3c8; --notx:#b4674f;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#241419; --bg2:#301b23; --ink:#f4e4e9; --ink2:#bb92a1;
+      --card:#2c1c23; --line:#452c35; --accent:#f08fa5; --accent2:#c76e85;
+      --shadow:0 12px 40px rgba(0,0,0,.45);
+      --field:#3a2530; --chipbg:#3d2833; --ghostbg:#432c38;
+      --cardg1:#2c1c23; --cardg2:#33202a; --cravebg:#3a2530; --missbg:#452c35;
+      --memobg:#33202a; --stampbg:#3a2530; --modalbg:#2c1c23; --track:#452c35;
+      --gridc:#4a3039; --radarfill:rgba(240,143,165,.20);
+      --yesbg:#26301f; --yesbd:#3a4a2e; --yestx:#a8c78e;
+      --nobg:#3a2620; --nobd:#54382e; --notx:#e0997f;
+    }
+    .toast{background:#f4e4e9;color:#241419}
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{
+    font-family:'Gowun Dodum',-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+    background:radial-gradient(120% 80% at 50% -10%,var(--bg2),var(--bg));
+    color:var(--ink); line-height:1.55; -webkit-font-smoothing:antialiased;
+    min-height:100vh; padding:22px 16px 60px;
+  }
+  .wrap{max-width:460px;margin:0 auto;position:relative;z-index:1}
+  header.top{text-align:center;margin:6px 0 18px}
+  header.top h1{font-size:27px;margin:0;letter-spacing:-.3px;
+    font-family:'Nanum Pen Script','Apple SD Gothic Neo',cursive;font-weight:400}
+  header.top p{margin:2px 0 0;color:var(--ink2);font-size:13px}
+  header.top .boxlink{color:var(--accent);font-weight:700;text-decoration:none;font-size:13px}
+  header.top .streak{color:var(--accent);font-weight:700;font-size:12.5px;margin-top:4px}
+
+  .floaty{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .floaty span{position:absolute;bottom:-40px;opacity:0;animation:rise linear infinite}
+  @keyframes rise{
+    0%{transform:translateY(0) rotate(-6deg);opacity:0}
+    12%{opacity:.32} 80%{opacity:.14}
+    100%{transform:translateY(-115vh) rotate(14deg);opacity:0}
+  }
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+    padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .panel h2{font-size:14px;margin:0 0 14px;color:var(--ink2);font-weight:700;
+    letter-spacing:.4px;display:flex;align-items:center;gap:8px}
+  .panel h2 .em{font-size:16px}
+
+  label.f{display:block;font-size:12.5px;color:var(--ink2);margin:12px 0 5px;font-weight:600}
+  input[type=text],input[type=password],input[type=date],textarea,select{
+    width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--field);
+    border:1px solid var(--line);border-radius:13px;padding:11px 13px;outline:none}
+  input:focus,textarea:focus,select:focus{border-color:var(--accent2)}
+  textarea{resize:vertical;min-height:44px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+  .slider{margin:14px 0}
+  .slider .lab{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;margin-bottom:3px}
+  .slider .lab b{font-weight:700}
+  .slider .lab .v{font-variant-numeric:tabular-nums;color:var(--accent);font-weight:800;font-size:15px}
+  .slider .ends{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink2);margin-top:2px}
+  input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:8px;
+    background:linear-gradient(90deg,var(--accent2),var(--track));outline:none;margin:4px 0}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;
+    background:#fff;border:3px solid var(--accent);box-shadow:0 2px 6px rgba(0,0,0,.18);cursor:pointer}
+
+  .qbox{background:var(--cravebg);border:1px dashed var(--accent2);border-radius:14px;
+    padding:12px 13px;margin-bottom:8px}
+  .qbox .qt{font-size:11px;font-weight:800;color:var(--accent);margin-bottom:4px}
+  .qbox .qq{font-size:14.5px;font-weight:700;margin-bottom:8px}
+
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+  .chip{background:var(--chipbg);border:1px solid var(--line);border-radius:999px;
+    padding:6px 12px;font-size:13px;display:flex;align-items:center;gap:6px}
+  .chip button{border:0;background:none;color:var(--ink2);font-size:15px;line-height:1;cursor:pointer;padding:0}
+  .addchip{display:flex;gap:8px;margin-top:8px}
+  .addchip input{flex:1}
+  .btn{font:inherit;font-weight:700;border:0;border-radius:13px;padding:11px 16px;cursor:pointer;color:var(--ink)}
+  .btn.sm{padding:10px 14px;font-size:14px}
+  .btn.pri{background:linear-gradient(135deg,#ef8fa4,var(--accent));color:#fff}
+  .btn.ghost{background:var(--ghostbg)}
+  .btn.block{width:100%;font-size:16px;padding:15px}
+  .btn:active{transform:translateY(1px)}
+  .btn:disabled{opacity:.6;cursor:default}
+
+  /* ===== CARD ===== */
+  .card{background:linear-gradient(165deg,var(--cardg1),var(--cardg2));border:1px solid var(--line);
+    border-radius:26px;padding:22px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .card::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(circle at 85% 8%,rgba(242,165,181,.25),transparent 42%);pointer-events:none}
+  .card::after{content:"";position:absolute;inset:8px;border:1.5px dashed rgba(232,120,143,.28);
+    border-radius:20px;pointer-events:none}
+  .stamp{position:absolute;top:18px;right:20px;width:42px;height:50px;
+    border:1.5px dashed var(--accent2);border-radius:6px;display:grid;place-items:center;
+    font-size:20px;background:var(--stampbg);transform:rotate(4deg);box-shadow:0 2px 8px rgba(190,100,125,.15)}
+  .card .date{position:absolute;top:74px;right:14px;font-size:10px;color:var(--ink2);
+    text-align:center;width:54px}
+  .card .date .pm{font-size:9px;margin-top:1px}
+  .card .date .dday{color:var(--accent);font-weight:800;font-size:11px;margin-top:2px}
+  .card .who{display:flex;align-items:center;gap:14px;margin-bottom:4px;padding-right:62px}
+  .card .ava{width:56px;height:56px;border-radius:50%;flex:none;
+    background:linear-gradient(140deg,var(--accent2),var(--accent));display:grid;place-items:center;
+    font-size:28px;box-shadow:0 4px 12px rgba(220,110,140,.35)}
+  .card .who h3{margin:0;font-size:29px;letter-spacing:-.4px;
+    font-family:'Nanum Pen Script','Apple SD Gothic Neo',cursive;font-weight:400;line-height:1.15}
+  .card .who .sub{color:var(--ink2);font-size:12.5px;margin-top:2px}
+  .mood-head{display:flex;align-items:center;gap:10px;margin:16px 0 4px}
+  .mood-head .big{font-size:34px}
+  .mood-head .txt b{font-size:16px}
+  .mood-head .txt div{font-size:12px;color:var(--ink2)}
+
+  .radar-wrap{display:flex;justify-content:center;margin:6px 0 2px}
+  svg.radar{width:100%;max-width:320px;height:auto}
+  .radar text{font-size:9.5px;fill:var(--ink2);font-weight:600}
+  .radar .val{fill:var(--accent);font-weight:800;font-size:9px}
+  .prevnote{text-align:center;font-size:10.5px;color:var(--ink2)}
+
+  .sec{margin-top:16px;position:relative}
+  .sec .t{font-size:11px;font-weight:800;color:var(--ink2);letter-spacing:.5px;margin-bottom:7px}
+  .card .chips .chip{background:var(--memobg)}
+  .kv{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13.5px}
+  .kv div b{color:var(--ink2);font-weight:600;margin-right:5px}
+  .crave{background:var(--cravebg);border:1px dashed var(--accent2);border-radius:14px;
+    padding:10px 13px;text-align:center;
+    font-family:'Nanum Pen Script','Apple SD Gothic Neo',cursive;font-size:23px;line-height:1.3}
+  .missbar{position:relative;height:24px;background:var(--missbg);border-radius:999px;overflow:hidden}
+  .missbar .fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));
+    border-radius:999px;transition:width .4s}
+  .missbar .pct{position:absolute;right:11px;top:50%;transform:translateY(-50%);
+    font-size:11.5px;font-weight:800;color:#b4536b}
+  @media (prefers-color-scheme: dark){.missbar .pct{color:#f4c2ce}}
+  .qcard{background:var(--memobg);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+  .qcard .q{font-size:12.5px;color:var(--ink2);font-weight:700;margin-bottom:5px}
+  .qcard .a{white-space:pre-wrap;font-family:'Nanum Pen Script','Apple SD Gothic Neo',cursive;
+    font-size:21px;line-height:1.35}
+  .talk{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .talk .box{border-radius:14px;padding:10px 12px;font-size:13px}
+  .talk .yes{background:var(--yesbg);border:1px solid var(--yesbd)}
+  .talk .no{background:var(--nobg);border:1px solid var(--nobd)}
+  .talk .box .h{font-size:10.5px;font-weight:800;letter-spacing:.4px;margin-bottom:3px}
+  .talk .yes .h{color:var(--yestx)}.talk .no .h{color:var(--notx)}
+  .memo{background:var(--memobg);border:1px solid var(--line);border-radius:14px;
+    padding:12px 14px;white-space:pre-wrap;
+    font-family:'Nanum Pen Script','Apple SD Gothic Neo',cursive;font-size:21px;line-height:1.35}
+
+  /* 긁는 비밀 한 줄 */
+  .scratchbox{position:relative;border:1px solid var(--line);border-radius:14px;
+    background:var(--memobg);overflow:hidden}
+  .scratchbox .inner{padding:16px 14px;text-align:center;white-space:pre-wrap;
+    font-family:'Nanum Pen Script','Apple SD Gothic Neo',cursive;font-size:21px;line-height:1.35}
+  canvas.scratch{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:pointer}
+
+  /* P.S. 추신 */
+  .ps{margin:20px auto 0;text-align:center;color:var(--ink);
+    font-family:'Nanum Pen Script','Apple SD Gothic Neo',cursive;font-size:22px;line-height:1.4;
+    opacity:0;transform:translateY(10px);transition:opacity 1.8s ease,transform 1.8s ease}
+  .ps.show{opacity:1;transform:none}
+
+  .hint{font-size:12px;color:var(--ink2);margin-top:8px;text-align:center}
+  .viewer-actions{margin-top:16px}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:14px;font-size:14px;
+    opacity:0;transition:.3s;z-index:150;pointer-events:none;max-width:88%;text-align:center}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  .tabs{display:flex;gap:8px;margin-bottom:16px;position:sticky;top:8px;z-index:20}
+  .tabs .btn{flex:1;box-shadow:0 4px 14px rgba(190,100,125,.18)}
+  .tabs .btn.on{background:linear-gradient(135deg,#ef8fa4,var(--accent));color:#fff}
+  .hidden{display:none!important}
+
+  /* 봉인 모달 */
+  .modalbg{position:fixed;inset:0;background:rgba(70,40,50,.45);display:grid;
+    place-items:center;z-index:100;padding:20px;overflow-y:auto}
+  .modal{background:var(--modalbg);border-radius:22px;padding:26px 22px;max-width:360px;width:100%;
+    box-shadow:0 20px 60px rgba(90,40,55,.3);text-align:center;margin:auto}
+  .modal .modem{font-size:40px}
+  .modal h3{margin:8px 0 4px;font-size:18px}
+  .modal .mp{color:var(--ink2);font-size:13px;margin:0 0 14px}
+  .modal input[type=password]{text-align:center;font-weight:700;letter-spacing:2px}
+  .modal #mLink{text-align:center;font-weight:700}
+  .modal .btn{margin-top:10px}
+  .ck{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13.5px;
+    margin:12px 0 2px;cursor:pointer;color:var(--ink)}
+  .ck input{width:auto;accent-color:var(--accent)}
+  .ckhint{font-size:11px;color:var(--ink2)}
+  .mdet{margin:12px 0 0;text-align:left;background:var(--field);border:1px solid var(--line);
+    border-radius:13px;padding:9px 12px}
+  .mdet summary{cursor:pointer;font-size:13.5px;font-weight:700;color:var(--ink2);list-style-position:inside}
+  .mdet .f{margin-top:10px}
+  .sealrow{display:flex;gap:9px;align-items:center;margin-top:10px}
+  .sealdot{width:30px;height:30px;border-radius:46% 54% 52% 48%;cursor:pointer;
+    border:2.5px solid transparent;flex:none;transform:rotate(-6deg)}
+  .sealdot.on{border-color:var(--ink);transform:rotate(-6deg) scale(1.12)}
+  .sealrow input{flex:1}
+
+  /* 잠금(봉인 편지) 화면 */
+  .lock{max-width:380px;margin:6vh auto 0;text-align:center;position:relative;z-index:1}
+  .lock .card{padding:30px 24px}
+  .lockart{position:relative;display:inline-block;padding-bottom:20px}
+  .lock .lockem{font-size:54px;display:inline-block;animation:sway 3s ease-in-out infinite}
+  @keyframes sway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+  .lock .lockem.tear{animation:tear .75s ease-in forwards}
+  @keyframes tear{
+    0%{transform:rotate(-5deg)}
+    35%{transform:rotate(12deg) scale(1.18)}
+    100%{transform:translateY(-80px) rotate(9deg) scale(.5);opacity:0}
+  }
+  .wax{position:absolute;left:50%;bottom:0;transform:translateX(-50%) rotate(-6deg);
+    width:56px;height:56px;border-radius:46% 54% 52% 48%;display:grid;place-items:center;
+    color:#fff;font-family:'Nanum Pen Script','Apple SD Gothic Neo',cursive;font-size:19px;line-height:1;
+    box-shadow:0 3px 10px rgba(0,0,0,.28),inset 0 0 0 3.5px rgba(255,255,255,.14);z-index:2}
+  .wax.crack{animation:crack .5s ease-in forwards}
+  @keyframes crack{
+    0%{transform:translateX(-50%) rotate(-6deg) scale(1)}
+    30%{transform:translateX(-50%) rotate(8deg) scale(1.2)}
+    100%{transform:translateX(-50%) translateY(95px) rotate(-40deg) scale(.55);opacity:0}
+  }
+  .lock h2{margin:12px 0 4px;font-size:27px;
+    font-family:'Nanum Pen Script','Apple SD Gothic Neo',cursive;font-weight:400}
+  .lock p{color:var(--ink2);font-size:13.5px;margin:0 0 18px}
+  .lock .envline{font-family:'Nanum Pen Script','Apple SD Gothic Neo',cursive;
+    font-size:21px;color:var(--ink);margin:10px 0 2px}
+  .lock .thick{font-size:12px;color:var(--ink2);margin:2px 0 14px}
+  .lock .hintline{font-size:12.5px;color:var(--accent);font-weight:700;margin-top:9px}
+  .lock input{text-align:center;font-size:22px;letter-spacing:6px;font-weight:800}
+  .lock .btn{margin-top:14px}
+  .lock .card.shake{animation:shakex .4s}
+  @keyframes shakex{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-9px)}40%,80%{transform:translateX(9px)}}
+  .err{color:var(--warn);font-size:13px;margin-top:10px;min-height:18px;font-weight:600}
+
+  .burst{position:fixed;inset:0;pointer-events:none;z-index:60}
+  .burst span{position:absolute;font-size:24px;opacity:0;animation:pop 1.4s ease-out forwards}
+  @keyframes pop{0%{transform:translateY(0) scale(.5);opacity:0}15%{opacity:1}
+    100%{transform:translateY(-130px) scale(1.3);opacity:0}}
+  .pop-in{animation:cardin .55s cubic-bezier(.2,.9,.3,1.15)}
+  @keyframes cardin{from{transform:scale(.93) translateY(16px);opacity:0}
+    to{transform:scale(1) translateY(0);opacity:1}}
+  .boxcard{margin-bottom:18px}
+  .boxps{text-align:center;font-family:'Nanum Pen Script','Apple SD Gothic Neo',cursive;
+    font-size:20px;margin:10px 0 22px;color:var(--ink)}
+  .spark{width:100%;height:auto}
+</style>
+
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="impFile" accept="application/json" class="hidden">
+
+<!-- 봉인 모달 -->
+<div class="modalbg hidden" id="shareModal">
+  <div class="modal">
+    <div id="mStep1">
+      <div class="modem">💌</div>
+      <h3>마음 봉인하기</h3>
+      <p class="mp">둘만 아는 숫자를 정해줘요.<br>우리 기념일처럼, 길수록 좋아요 (4자리 이상)</p>
+      <input type="password" id="mPin" inputmode="numeric" placeholder="둘만 아는 숫자" autocomplete="off">
+      <label class="ck"><input type="checkbox" id="mProfile"> 🌱 내 소개(생일·취향)도 함께 보내기</label>
+      <div class="ckhint">처음 보낼 때 한 번이면 충분해요</div>
+
+      <details class="mdet">
+        <summary>✉️ 겉봉투 꾸미기 (선택)</summary>
+        <label class="f">겉봉투 한 줄 — 잠기지 않아요</label>
+        <input type="text" id="mEnv" maxlength="40" placeholder="예: 버스에서 읽지 마 🙈">
+        <label class="f">숫자 힌트</label>
+        <input type="text" id="mHint" maxlength="20" placeholder="예: 우리가 처음 만난 날">
+        <label class="f">왁스 씰 — 우리 도장</label>
+        <div class="sealrow">
+          <div class="sealdot" data-i="0"></div>
+          <div class="sealdot" data-i="1"></div>
+          <div class="sealdot" data-i="2"></div>
+          <input type="text" id="mInit" maxlength="5" placeholder="ㄱ♥ㅅ">
+        </div>
+      </details>
+
+      <details class="mdet">
+        <summary>⏳ 시간 봉인 (선택)</summary>
+        <label class="ck" style="justify-content:flex-start"><input type="checkbox" id="mNight"> 🌙 밤에만 열려요 (22시~아침 6시)</label>
+        <label class="f">이 날부터 열 수 있어요</label>
+        <input type="date" id="mOpenAt">
+        <div class="ckhint" style="margin-top:6px;text-align:left">예: 100일에 맞춰서 — 그날까지 봉인돼요</div>
+      </details>
+
+      <div class="err" id="mErr"></div>
+      <button class="btn pri block" id="mSeal">💌 봉인하기</button>
+      <button class="btn ghost block" id="mCancel" style="margin-top:8px">취소</button>
+    </div>
+    <div id="mStep2" class="hidden">
+      <div class="modem">💗</div>
+      <h3>봉인 완료!</h3>
+      <p class="mp">상대가 이미 아는 숫자(기념일 등)로 잠갔다면<br>숫자는 따로 보낼 필요도 없어요.</p>
+      <input type="text" id="mLink" readonly>
+      <button class="btn pri block hidden" id="mShare">📮 바로 보내기</button>
+      <button class="btn pri block" id="mCopy">🔗 링크 복사</button>
+      <button class="btn ghost block" id="mClose" style="margin-top:8px">닫기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================ 데이터 모델 ============================ */
+const AXES = [
+  {k:"energy",  name:"에너지",  lo:"방전", hi:"충전"},
+  {k:"mood",    name:"기분",    lo:"가라앉음", hi:"들뜸"},
+  {k:"stress",  name:"스트레스",lo:"여유", hi:"압박"},
+  {k:"social",  name:"사교성",  lo:"혼자", hi:"만나고파"},
+  {k:"focus",   name:"집중력",  lo:"산만", hi:"몰입"},
+  {k:"appetite",name:"식욕",    lo:"없음", hi:"폭발"},
+];
+const MOODS = [
+  {min:0,em:"🌧️",t:"비 오는 마음"},{min:3,em:"☁️",t:"조금 흐림"},
+  {min:5,em:"⛅",t:"구름 사이 햇살"},{min:7,em:"🌤️",t:"맑음"},{min:8.5,em:"💖",t:"완전 맑음"}
+];
+const KOR=["영","하나","둘","셋","넷","다섯","여섯","일곱","여덟","아홉","열"];
+const SEALS=[
+  {c:"#8e2f43",l:"#b95d72",d:"#5c1c2b"},   // 버건디
+  {c:"#e8788f",l:"#f4a7b8",d:"#b44e64"},   // 로즈
+  {c:"#4a4468",l:"#726b96",d:"#2c2843"},   // 미드나잇
+];
+const QUESTIONS=[
+"요즘 나를 제일 웃게 하는 사소한 건 뭐야?",
+"우리 처음 만난 날, 내 첫인상 솔직히 어땠어?",
+"요즘 제일 자주 듣는 노래 알려줘",
+"지금 당장 나랑 같이 가고 싶은 곳은?",
+"내가 했던 말 중에 제일 좋았던 한마디는?",
+"요즘 고민 하나만 살짝 보여줘",
+"다음 데이트 때 꼭 하고 싶은 거 하나!",
+"오늘 하루 중 제일 기억에 남는 순간은?",
+"내 표정 중에 제일 좋아하는 표정 있어?",
+"요즘 새로 해보고 싶은 게 있어?",
+"나한테 처음 설렜던 순간이 언제였어?",
+"우리 둘만 아는 것 중 제일 웃긴 거는?",
+"요즘 제일 맛있게 먹은 건 뭐야?",
+"스트레스 받을 때 내가 어떻게 해주면 좋아?",
+"10년 뒤 우리는 뭐 하고 있을까?",
+"내 습관 중에 귀엽다고 생각하는 거 있어?",
+"오늘 나에게 해주고 싶은 칭찬 한마디!",
+"같이 배워보고 싶은 거 있어?",
+"내가 보낸 사진 중에 제일 아끼는 건?",
+"요즘 밤에 잠들기 전에 무슨 생각해?",
+"우리 처음 손 잡던 날 기억나?",
+"나를 색으로 표현하면 무슨 색이야?",
+"요즘 제일 받고 싶은 선물은?",
+"내 목소리 들으면 어떤 기분이야?",
+"둘이서 가보고 싶은 여행지 1순위는?",
+"내가 요리해준다면 뭐 먹고 싶어?",
+"요즘 너를 힘들게 하는 건 없어?",
+"우리 커플 노래 하나 정한다면?",
+"내 어떤 점이 너랑 제일 잘 맞아?",
+"오늘 하늘 봤어? 어땠어?",
+"지금 제일 보고 싶은 내 모습은?",
+"어릴 때 꿈이 뭐였어?",
+"나랑 있을 때 제일 편한 순간은 언제야?",
+"요즘 제일 자주 하는 혼잣말은?",
+"사계절 중 나랑 보내고 싶은 최고의 계절은?",
+"내가 아플 때 어떻게 해줄 거야?",
+"우리 첫 데이트, 어디가 제일 좋았어?",
+"나에 대해 더 알고 싶은 거 하나만!",
+"요즘 제일 크게 웃었던 일은?",
+"내 이름 부를 때 어떤 기분이야?",
+"같이 키우고 싶은 동물 있어?",
+"오늘 힘들었던 일 하나, 좋았던 일 하나!",
+"내 손을 잡으면 어떤 느낌이야?",
+"우리 다음 기념일에 뭐 하고 싶어?",
+"내가 없는 하루는 어때?",
+"요즘 인생 영화나 드라마 있어?",
+"나를 처음 봤을 때 어디에 끌렸어?",
+"비 오는 날 나랑 뭐 하고 싶어?",
+"서로에게 새 별명 하나씩 지어줄까?",
+"오늘의 나를 이모지 3개로 표현하면?",
+"내가 제일 빛나 보일 때는 언제야?",
+"요즘 감사한 일 하나만 꼽는다면?",
+"우리만의 기념일 하나 더 만든다면 무슨 날?",
+"잠들기 전 마지막으로 생각나는 사람 누구야? (정답 있음)",
+"나랑 꼭 같이 먹어보고 싶은 음식은?",
+"오늘 몇 번 내 생각 났어? 솔직하게!",
+"내가 부르는 노래 들어보고 싶어?",
+"우리 늙어서도 같이 하고 싶은 거 하나!",
+"지금 이 순간 나에게 하고 싶은 말은?",
+"다시 태어나도 나 만날 거야?",
+];
+function dayOfYear(){const n=new Date();return Math.floor((n-new Date(n.getFullYear(),0,0))/864e5);}
+function todaysQuestion(){return QUESTIONS[dayOfYear()%QUESTIONS.length];}
+function keyOf(n){return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,"0")}-${String(n.getDate()).padStart(2,"0")}`;}
+function dateKey(){return keyOf(new Date());}
+function yesterdayKey(){const n=new Date();n.setDate(n.getDate()-1);return keyOf(n);}
+function todayStr(){const n=new Date();const w=["일","월","화","수","목","금","토"][n.getDay()];
+  return `${n.getFullYear()}.${String(n.getMonth()+1).padStart(2,"0")}.${String(n.getDate()).padStart(2,"0")} (${w})`;}
+function postmark(){const h=new Date().getHours();
+  return h<6?"새벽":h<12?"아침":h<18?"낮":h<22?"저녁":"밤";}
+function isNight(){const h=new Date().getHours();return h>=22||h<6;}
+function calcDday(anniv){
+  if(!anniv)return null;
+  const a=new Date(anniv+"T00:00:00");
+  if(isNaN(a))return null;
+  const t=new Date();
+  const n=Math.floor((new Date(t.getFullYear(),t.getMonth(),t.getDate())-a)/864e5)+1;
+  return n>0?n:null;
+}
+function birthSoon(birth){
+  if(!birth)return false;
+  const m=String(birth).match(/(\d{1,2})[.\/\-](\d{1,2})\s*\.?\s*$/);
+  if(!m)return false;
+  const now=new Date();
+  let bd=new Date(now.getFullYear(),+m[1]-1,+m[2]);
+  if((bd-now)/864e5<-0.5)bd=new Date(now.getFullYear()+1,+m[1]-1,+m[2]);
+  const diff=(bd-now)/864e5;
+  return diff>=-0.5&&diff<=7;
+}
+function stampFor(d){
+  const dd=(d.dday!=null?d.dday:calcDday(d.anniv));
+  if(dd&&dd%100===0)return "🎉";
+  if(birthSoon(d.birth))return "🎂";
+  const mo=new Date().getMonth()+1;
+  return mo>=3&&mo<=5?"🌸":mo>=6&&mo<=8?"🌊":mo>=9&&mo<=11?"🍂":"⛄";
+}
+function computeOverall(axes){
+  return AXES.reduce((s,a)=>s+(a.k==="stress"?(10-axes[a.k]):axes[a.k]),0)/AXES.length;
+}
+function blank(){
+  return {
+    name:"", sub:"", ava:"🐥",
+    bio:"", birth:"", anniv:"", mbti:"", blood:"", allergy:"", cantEat:"",
+    likes:[], dislikes:[],
+    axes:{energy:5,mood:5,stress:5,social:5,focus:5,appetite:5},
+    miss:5, qa:"",
+    crave:"", memo:"", talkYes:"", talkNo:"", ps:"", secret:"",
+    lastDate:dateKey(),
+  };
+}
+const $=s=>document.querySelector(s);
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(t._);t._=setTimeout(()=>t.classList.remove("on"),2200);}
+
+/* ============================ 암호화 (PIN → AES-GCM, deflate 압축) ============================ */
+const enc=new TextEncoder(), dec=new TextDecoder();
+function b64u(buf){let b=btoa(String.fromCharCode(...new Uint8Array(buf)));return b.replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function unb64u(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return Uint8Array.from(atob(s),c=>c.charCodeAt(0));}
+function b64uText(s){return b64u(enc.encode(s));}
+function unb64uText(s){return dec.decode(unb64u(s));}
+async function deflate(bytes){
+  const cs=new CompressionStream("deflate-raw");
+  const w=cs.writable.getWriter();w.write(bytes);w.close();
+  return new Uint8Array(await new Response(cs.readable).arrayBuffer());
+}
+async function inflate(bytes){
+  const ds=new DecompressionStream("deflate-raw");
+  const w=ds.writable.getWriter();w.write(bytes);w.close();
+  return new Uint8Array(await new Response(ds.readable).arrayBuffer());
+}
+async function keyFrom(pin,salt){
+  const base=await crypto.subtle.importKey("raw",enc.encode(pin),"PBKDF2",false,["deriveKey"]);
+  return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:210000,hash:"SHA-256"},
+    base,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);
+}
+/* 링크 형식: #c=<z|p>.<문자수>.<b64url>&t=겉봉투&h=힌트&s=<색>.<이니셜> */
+async function encryptCard(obj,pin){
+  let data=enc.encode(JSON.stringify(obj)), flag="p";
+  if(typeof CompressionStream!=="undefined"){data=await deflate(data);flag="z";}
+  const salt=crypto.getRandomValues(new Uint8Array(16));
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const key=await keyFrom(pin,salt);
+  const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},key,data);
+  const out=new Uint8Array(16+12+ct.byteLength);
+  out.set(salt,0);out.set(iv,16);out.set(new Uint8Array(ct),28);
+  const payload=b64u(out);
+  return flag+"."+payload.length+"."+payload;
+}
+function parsePayload(str){
+  const m=str.match(/^([zp])\.(\d+)\.(.+)$/s);
+  if(!m)return {flag:"p",declared:null,payload:str};
+  return {flag:m[1],declared:+m[2],payload:m[3]};
+}
+async function decryptCard(str,pin){
+  const p=parsePayload(str);
+  const raw=unb64u(p.payload);
+  const salt=raw.slice(0,16),iv=raw.slice(16,28),ct=raw.slice(28);
+  const key=await keyFrom(pin,salt);
+  const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv},key,ct);
+  let bytes=new Uint8Array(pt);
+  if(p.flag==="z")bytes=await inflate(bytes);
+  return JSON.parse(dec.decode(bytes));
+}
+
+/* ============================ 레이더 차트 (어제 겹치기 지원) ============================ */
+function radarSVG(axes,prev){
+  const cx=160,cy=150,R=95,N=AXES.length;
+  const ang=i=>(-90+i*360/N)*Math.PI/180;
+  const pt=(i,r)=>[cx+r*Math.cos(ang(i)),cy+r*Math.sin(ang(i))];
+  let g="";
+  for(let ring=1;ring<=4;ring++){
+    const r=R*ring/4;
+    let p=AXES.map((_,i)=>pt(i,r).join(",")).join(" ");
+    g+=`<polygon points="${p}" fill="none" stroke="var(--gridc)" stroke-width="1"/>`;
+  }
+  AXES.forEach((a,i)=>{const[x,y]=pt(i,R);g+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--gridc)" stroke-width="1"/>`;});
+  if(prev){
+    const pp=AXES.map((a,i)=>pt(i,R*((prev[a.k]??5)/10)).join(",")).join(" ");
+    g+=`<polygon points="${pp}" fill="none" stroke="var(--accent2)" stroke-width="1.8" stroke-dasharray="5 4" opacity=".75" stroke-linejoin="round"/>`;
+  }
+  const dp=AXES.map((a,i)=>pt(i,R*(axes[a.k]/10)).join(",")).join(" ");
+  g+=`<polygon points="${dp}" fill="var(--radarfill)" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>`;
+  AXES.forEach((a,i)=>{const[x,y]=pt(i,R*(axes[a.k]/10));g+=`<circle cx="${x}" cy="${y}" r="3.5" fill="var(--accent)"/>`;});
+  AXES.forEach((a,i)=>{
+    let[x,y]=pt(i,R+22);
+    const anchor=Math.abs(x-cx)<8?"middle":(x>cx?"start":"end");
+    g+=`<text x="${x}" y="${y}" text-anchor="${anchor}">${a.name}</text>`;
+    g+=`<text x="${x}" y="${y+12}" text-anchor="${anchor}" class="val">${axes[a.k]}</text>`;
+  });
+  return `<svg class="radar" viewBox="0 0 320 300" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
+}
+
+/* ============================ 카드 렌더 ============================ */
+function moodOf(v){let m=MOODS[0];for(const x of MOODS)if(v>=x.min)m=x;return m;}
+function esc(s){return (s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function cardHTML(d,dateStr,opts={}){
+  const overall=computeOverall(d.axes);
+  const mood=moodOf(overall);
+  const cnt=Math.round(overall);
+  const capt=cnt>=10?"마음이 가득":"열에 "+KOR[cnt]+"쯤";
+  const dd=(d.dday!=null?d.dday:calcDday(d.anniv));
+  const info=[
+    d.birth&&`<div><b>생일</b>${esc(d.birth)}</div>`,
+    d.mbti&&`<div><b>MBTI</b>${esc(d.mbti)}</div>`,
+    d.blood&&`<div><b>혈액형</b>${esc(d.blood)}</div>`,
+    d.allergy&&`<div><b>알러지</b>${esc(d.allergy)}</div>`,
+    d.cantEat&&`<div><b>못 먹음</b>${esc(d.cantEat)}</div>`,
+  ].filter(Boolean).join("");
+  const likeChips=(d.likes||[]).map(x=>`<span class="chip">${esc(x)}</span>`).join("");
+  const dislikeChips=(d.dislikes||[]).map(x=>`<span class="chip">${esc(x)}</span>`).join("");
+  const secretSec=d.secret?(opts.reveal
+    ?`<div class="sec"><div class="t">🪙 몰래 한 줄</div><div class="scratchbox"><div class="inner">${esc(d.secret)}</div></div></div>`
+    :`<div class="sec"><div class="t">🪙 몰래 한 줄 — 긁어봐</div><div class="scratchbox"><div class="inner">${esc(d.secret)}</div><canvas class="scratch"></canvas></div></div>`):"";
+  return `<div class="card">
+    <div class="stamp">${stampFor(d)}</div>
+    <div class="date">${dateStr}${d.when?`<div class="pm">${esc(d.when)}에 봉인</div>`:""}${dd?`<div class="dday">D+${dd} 💗</div>`:""}</div>
+    <div class="who">
+      <div class="ava">${esc(d.ava||"🐥")}</div>
+      <div><h3>${esc(d.name||"(이름을 적어줘)")}</h3>${d.sub?`<div class="sub">${esc(d.sub)}</div>`:""}</div>
+    </div>
+    ${d.bio?`<div class="sub" style="color:var(--ink2);font-size:13px;margin-top:2px">${esc(d.bio)}</div>`:""}
+    <div class="mood-head">
+      <div class="big">${mood.em}</div>
+      <div class="txt"><b>오늘의 마음 날씨 · ${mood.t}</b><div>${capt} · ${overall.toFixed(1)}/10</div></div>
+    </div>
+    <div class="radar-wrap">${radarSVG(d.axes,d.prev)}</div>
+    ${d.prev?`<div class="prevnote">- - - 어제의 마음</div>`:""}
+    ${typeof d.miss==="number"?`<div class="sec"><div class="t">💗 오늘, 이만큼 보고싶어</div>
+      <div class="missbar"><div class="fill" style="width:${d.miss*10}%"></div><span class="pct">${d.miss*10}%</span></div></div>`:""}
+    ${d.qa?`<div class="sec"><div class="t">💬 오늘의 질문</div>
+      <div class="qcard"><div class="q">${esc(d.q||"")}</div><div class="a">${esc(d.qa)}</div></div></div>`:""}
+    ${d.crave?`<div class="sec"><div class="t">🍽️ 오늘 이거 같이 먹고 싶어</div><div class="crave">${esc(d.crave)}</div></div>`:""}
+    ${(d.talkYes||d.talkNo)?`<div class="sec"><div class="talk">
+        ${d.talkYes?`<div class="box yes"><div class="h">이런 말 해줘 💕</div>${esc(d.talkYes)}</div>`:""}
+        ${d.talkNo?`<div class="box no"><div class="h">오늘은 살짝 피해줘 🙏</div>${esc(d.talkNo)}</div>`:""}
+      </div></div>`:""}
+    ${d.memo?`<div class="sec"><div class="t">💌 너에게 한 줄</div><div class="memo">${esc(d.memo)}</div></div>`:""}
+    ${secretSec}
+    ${info?`<div class="sec"><div class="t">나는 이런 사람이야</div><div class="kv">${info}</div></div>`:""}
+    ${likeChips?`<div class="sec"><div class="t">평소 좋아해</div><div class="chips">${likeChips}</div></div>`:""}
+    ${dislikeChips?`<div class="sec"><div class="t">이건 좀 싫어</div><div class="chips">${dislikeChips}</div></div>`:""}
+  </div>`;
+}
+
+/* ============================ 긁는 비밀 한 줄 ============================ */
+function initScratch(root){
+  (root||document).querySelectorAll("canvas.scratch:not(.armed)").forEach(cv=>{
+    cv.classList.add("armed");
+    const box=cv.parentElement;
+    const dpr=window.devicePixelRatio||1;
+    const w=box.clientWidth||300,h=box.clientHeight||64;
+    cv.width=w*dpr;cv.height=h*dpr;
+    const ctx=cv.getContext("2d");ctx.scale(dpr,dpr);
+    const g=ctx.createLinearGradient(0,0,w,h);
+    g.addColorStop(0,"#d9c3cc");g.addColorStop(.5,"#c9b0bc");g.addColorStop(1,"#e5d2da");
+    ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+    ctx.fillStyle="rgba(255,255,255,.3)";
+    for(let i=0;i<70;i++)ctx.fillRect(Math.random()*w,Math.random()*h,2,2);
+    ctx.fillStyle="#7d6570";ctx.font="700 13.5px 'Gowun Dodum',sans-serif";
+    ctx.textAlign="center";ctx.textBaseline="middle";
+    ctx.fillText("🪙 여기를 문질러 봐",w/2,h/2);
+    let down=false,moves=0,done=false;
+    const scratch=e=>{
+      const r=cv.getBoundingClientRect();
+      ctx.globalCompositeOperation="destination-out";
+      ctx.beginPath();ctx.arc(e.clientX-r.left,e.clientY-r.top,17,0,7);ctx.fill();
+      if(++moves%7===0)check();
+    };
+    const check=()=>{
+      if(done)return;
+      const img=ctx.getImageData(0,0,cv.width,cv.height).data;
+      let clear=0,total=0;
+      for(let i=3;i<img.length;i+=64){total++;if(img[i]===0)clear++;}
+      if(clear/total>.55){
+        done=true;cv.style.transition="opacity .8s";cv.style.opacity=0;
+        setTimeout(()=>cv.remove(),850);heartBurst();
+      }
+    };
+    cv.addEventListener("pointerdown",e=>{down=true;try{cv.setPointerCapture(e.pointerId);}catch(_){ }scratch(e);});
+    cv.addEventListener("pointermove",e=>{if(down)scratch(e);});
+    cv.addEventListener("pointerup",()=>{down=false;check();});
+  });
+}
+
+/* ============================ P.S. 추신 ============================ */
+function armPS(){
+  const el=document.querySelector(".ps");
+  if(!el)return;
+  const show=()=>el.classList.add("show");
+  if("IntersectionObserver" in window){
+    const io=new IntersectionObserver(es=>{
+      es.forEach(e=>{if(e.isIntersecting){setTimeout(show,900);io.disconnect();}});
+    });
+    io.observe(el);
+  }
+  setTimeout(show,4500); // 안전망
+}
+
+/* ============================ 저장/로드 & 축적 ============================ */
+let D;
+function moodLog(){try{return JSON.parse(localStorage.getItem("moodLog"))||{}}catch(e){return{}}}
+function logDay(key,d){
+  const m=moodLog();
+  m[key]={o:+computeOverall(d.axes).toFixed(1),axes:{...d.axes},miss:d.miss};
+  const ks=Object.keys(m).sort();
+  while(ks.length>60){delete m[ks[0]];ks.shift();}
+  localStorage.setItem("moodLog",JSON.stringify(m));
+}
+function worthLogging(d){
+  const b=blank();
+  return JSON.stringify(d.axes)!==JSON.stringify(b.axes)||d.miss!==5||!!d.crave||!!d.memo||!!d.qa;
+}
+function sealedDates(){try{return JSON.parse(localStorage.getItem("sealedDates"))||[]}catch(e){return[]}}
+function markSealed(){
+  const s=sealedDates();const k=dateKey();
+  if(!s.includes(k)){s.push(k);localStorage.setItem("sealedDates",JSON.stringify(s));}
+}
+function streak(){
+  const s=new Set(sealedDates());
+  let n=0;const t=new Date();
+  if(!s.has(keyOf(t)))t.setDate(t.getDate()-1);
+  while(s.has(keyOf(t))){n++;t.setDate(t.getDate()-1);}
+  return n;
+}
+function cardBox(){try{return JSON.parse(localStorage.getItem("cardBox"))||[]}catch(e){return []}}
+function load(){
+  try{
+    const raw=JSON.parse(localStorage.getItem("todayCard"));
+    if(!raw)return null;
+    const b=blank();
+    const d={...b,...raw,axes:{...b.axes,...(raw.axes||{})}};
+    if(d.lastDate&&d.lastDate!==dateKey()){
+      if(worthLogging(d)&&!moodLog()[d.lastDate])logDay(d.lastDate,d);   // 어제를 기록으로
+      d.axes={...b.axes};d.miss=5;d.crave="";d.memo="";d.talkYes="";d.talkNo="";d.qa="";d.ps="";d.secret="";
+      d._newDay=true;
+    }
+    d.lastDate=dateKey();
+    return d;
+  }catch(e){return null}
+}
+function save(){const {_newDay,...rest}=D;localStorage.setItem("todayCard",JSON.stringify(rest));}
+D=load()||blank();
+
+/* 지난 7일 스파크 */
+function sparkHTML(){
+  const m=moodLog();const days=[];const t=new Date();
+  for(let i=6;i>=0;i--){
+    const dd=new Date(t);dd.setDate(t.getDate()-i);
+    const k=keyOf(dd);
+    days.push({w:"일월화수목금토"[dd.getDay()],o:m[k]?m[k].o:null});
+  }
+  if(days.filter(x=>x.o!=null).length<2)return "";
+  const bars=days.map((x,i)=>{
+    const h=x.o==null?4:6+x.o*5.4, y=66-h, cxx=i*30+16;
+    return `<rect x="${i*30+8}" y="${y}" width="16" height="${h}" rx="6" fill="${x.o==null?'var(--line)':'var(--accent2)'}"/>`+
+      (x.o!=null?`<text x="${cxx}" y="${y-4}" text-anchor="middle" font-size="8.5" fill="var(--accent)" font-weight="800">${x.o}</text>`:"")+
+      `<text x="${cxx}" y="78" text-anchor="middle" font-size="9" fill="var(--ink2)">${x.w}</text>`;
+  }).join("");
+  return `<div class="panel"><h2><span class="em">📈</span> 지난 7일의 마음</h2>
+    <svg class="spark" viewBox="0 0 214 82">${bars}</svg></div>`;
+}
+
+/* ============================ 빌더(마음 쓰기) 화면 ============================ */
+function renderBuilder(){
+  const app=$("#app");
+  const night=isNight();
+  const box=cardBox();
+  const st=streak(), stamps=sealedDates().length;
+  const streakLine=st>=2?`💌 ${st}일째 연속으로 마음을 부치는 중`
+    :(stamps>0?`📮 지금까지 부친 마음 ${stamps}장`:"");
+  app.innerHTML=`
+  <header class="top"><h1>오늘의 마음 💌</h1>
+    <p>${night?"하루 끝, 너에게 보내는 오늘의 나":"하루 한 장, 너에게 보내는 오늘의 나"}</p>
+    ${streakLine?`<div class="streak">${streakLine}</div>`:""}
+    ${box.length?`<p style="margin-top:6px"><a href="#" class="boxlink" id="boxLink">💝 받은 마음 ${box.length}장 보러가기</a></p>`:""}
+  </header>
+
+  <div class="tabs">
+    <button class="btn ghost on" id="tEdit">✏️ 마음 쓰기</button>
+    <button class="btn ghost" id="tView">💌 미리보기</button>
+  </div>
+
+  <div id="editPane">
+    <div class="panel">
+      <h2><span class="em">🌡️</span> 오늘의 마음 온도</h2>
+      <div id="sliders"></div>
+    </div>
+
+    <div class="panel">
+      <h2><span class="em">💗</span> 오늘의 우리</h2>
+      <div class="qbox">
+        <div class="qt">💬 오늘의 질문 · 같은 날엔 우리 둘 다 같은 질문이야</div>
+        <div class="qq">${esc(todaysQuestion())}</div>
+        <textarea id="f_qa" placeholder="너의 답이 궁금해">${esc(D.qa)}</textarea>
+      </div>
+      <div class="slider">
+        <div class="lab"><b>보고싶음 💗</b><span class="v" id="v_miss">${D.miss}</span></div>
+        <input type="range" min="0" max="10" step="1" id="s_miss" value="${D.miss}">
+        <div class="ends"><span>오늘은 괜찮아</span><span>너무 보고싶어</span></div>
+      </div>
+      <label class="f">오늘 같이 먹고 싶은 것</label><input type="text" id="f_crave" value="${esc(D.crave)}" placeholder="마라탕, 붕어빵...">
+      <div class="row2" style="margin-top:4px">
+        <div><label class="f">이런 말 해줘 💕</label><input type="text" id="f_talkYes" value="${esc(D.talkYes)}" placeholder="응원, 조용히 옆에 있기"></div>
+        <div><label class="f">오늘은 피해줘 🙏</label><input type="text" id="f_talkNo" value="${esc(D.talkNo)}" placeholder="다그치기, 잔소리"></div>
+      </div>
+      <label class="f">너에게 한 줄</label><textarea id="f_memo" placeholder="오늘 하고 싶은 말">${esc(D.memo)}</textarea>
+      <label class="f">🪙 몰래 한 줄 — 긁어야 보여요</label><input type="text" id="f_secret" value="${esc(D.secret)}" placeholder="남들 있는 데서 열지 마...">
+      <label class="f">✒️ P.S. — 다 읽은 너에게</label><input type="text" id="f_ps" value="${esc(D.ps)}" placeholder="마지막으로 하고 싶은 말">
+    </div>
+
+    <div class="panel">
+      <h2><span class="em">🌱</span> 나는 이런 사람</h2>
+      <div class="row2">
+        <div><label class="f">이름/애칭</label><input type="text" id="f_name" value="${esc(D.name)}" placeholder="너의 애칭"></div>
+        <div><label class="f">아바타 이모지</label><input type="text" id="f_ava" value="${esc(D.ava)}" maxlength="4" placeholder="🐥"></div>
+      </div>
+      <label class="f">한 줄 소개</label><input type="text" id="f_sub" value="${esc(D.sub)}" placeholder="예: 요즘 러닝에 빠진 사람">
+      <div class="row2" style="margin-top:4px">
+        <div><label class="f">생일</label><input type="text" id="f_birth" value="${esc(D.birth)}" placeholder="0000.00.00"></div>
+        <div><label class="f">우리가 시작한 날 💗</label><input type="date" id="f_anniv" value="${esc(D.anniv)}"></div>
+      </div>
+      <div class="row2">
+        <div><label class="f">MBTI</label><input type="text" id="f_mbti" value="${esc(D.mbti)}" placeholder="INFP"></div>
+        <div><label class="f">혈액형</label><input type="text" id="f_blood" value="${esc(D.blood)}" placeholder="A+"></div>
+      </div>
+      <div class="row2">
+        <div><label class="f">알러지</label><input type="text" id="f_allergy" value="${esc(D.allergy)}" placeholder="복숭아, 갑각류"></div>
+        <div><label class="f">못 먹는 것</label><input type="text" id="f_cantEat" value="${esc(D.cantEat)}" placeholder="오이, 고수"></div>
+      </div>
+      <label class="f">자기소개(선택)</label><textarea id="f_bio" placeholder="자유롭게">${esc(D.bio)}</textarea>
+    </div>
+
+    <div class="panel">
+      <h2><span class="em">🫙</span> 취향 저장소</h2>
+      <label class="f">좋아하는 것</label>
+      <div class="chips" id="likesBox"></div>
+      <div class="addchip"><input type="text" id="likeIn" placeholder="예: 딸기라떼, 산책"><button class="btn ghost sm" id="likeAdd">추가</button></div>
+      <label class="f" style="margin-top:14px">싫어하는 것</label>
+      <div class="chips" id="dislikesBox"></div>
+      <div class="addchip"><input type="text" id="dislikeIn" placeholder="예: 시끄러운 곳"><button class="btn ghost sm" id="dislikeAdd">추가</button></div>
+    </div>
+
+    ${sparkHTML()}
+
+    <button class="btn pri block" id="shareBtn">💌 마음 봉인해서 보내기</button>
+    <div class="hint">쓰는 중인 내용은 이 기기에 자동 저장돼요 · 언제든 지울 수 있어요</div>
+    <div class="row2" style="margin-top:10px">
+      <button class="btn ghost sm" id="expBtn">📦 백업 저장</button>
+      <button class="btn ghost sm" id="impBtn">📂 가져오기</button>
+    </div>
+    <button class="btn ghost block sm" id="wipeBtn" style="margin-top:8px;font-size:13px">🧹 이 기기에서 내 기록 지우기</button>
+  </div>
+
+  <div id="viewPane" class="hidden"><div id="preview"></div>
+    <button class="btn pri block" id="shareBtn2" style="margin-top:16px">💌 마음 봉인해서 보내기</button>
+  </div>`;
+
+  const sc=$("#sliders");
+  sc.innerHTML=AXES.map(a=>`
+    <div class="slider">
+      <div class="lab"><b>${a.name}</b><span class="v" id="v_${a.k}">${D.axes[a.k]}</span></div>
+      <input type="range" min="0" max="10" step="1" id="s_${a.k}" value="${D.axes[a.k]}">
+      <div class="ends"><span>${a.lo}</span><span>${a.hi}</span></div>
+    </div>`).join("");
+  AXES.forEach(a=>{
+    const s=$("#s_"+a.k);
+    s.addEventListener("input",()=>{D.axes[a.k]=+s.value;$("#v_"+a.k).textContent=s.value;save();});
+  });
+  const sm=$("#s_miss");
+  sm.addEventListener("input",()=>{D.miss=+sm.value;$("#v_miss").textContent=sm.value;save();});
+
+  const bind=(id,key)=>{const el=$("#"+id);el.addEventListener("input",()=>{D[key]=el.value;save();});};
+  ["name","ava","sub","birth","anniv","mbti","blood","allergy","cantEat","bio","crave","talkYes","talkNo","memo","qa","ps","secret"].forEach(k=>bind("f_"+k,k));
+
+  renderChips();
+  $("#likeAdd").onclick=()=>addChip("likes","likeIn");
+  $("#dislikeAdd").onclick=()=>addChip("dislikes","dislikeIn");
+  $("#likeIn").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addChip("likes","likeIn");}});
+  $("#dislikeIn").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addChip("dislikes","dislikeIn");}});
+
+  $("#tEdit").onclick=()=>switchTab("edit");
+  $("#tView").onclick=()=>switchTab("view");
+  $("#shareBtn").onclick=doShare;
+  $("#shareBtn2").onclick=doShare;
+  $("#wipeBtn").onclick=()=>{
+    if(confirm("이 기기에 저장된 내용(프로필·오늘 기록·보관함·지난 마음)을 모두 지울까요?")){
+      ["todayCard","cardBox","sendProfile","moodLog","sealedDates","sealStyle","pinHint"].forEach(k=>localStorage.removeItem(k));
+      D=blank();renderBuilder();toast("깨끗하게 지웠어요 🧹");
+    }
+  };
+  $("#expBtn").onclick=exportBackup;
+  $("#impBtn").onclick=()=>$("#impFile").click();
+  const bl=$("#boxLink");if(bl)bl.onclick=e=>{e.preventDefault();renderBox();};
+}
+function renderChips(){
+  const mk=(arr,box,type)=>{$("#"+box).innerHTML=arr.map((x,i)=>
+    `<span class="chip">${esc(x)}<button data-t="${type}" data-i="${i}">×</button></span>`).join("");};
+  mk(D.likes,"likesBox","likes");mk(D.dislikes,"dislikesBox","dislikes");
+  document.querySelectorAll(".chip button[data-i]").forEach(b=>{
+    b.onclick=()=>{D[b.dataset.t].splice(+b.dataset.i,1);save();renderChips();};});
+}
+function addChip(key,inId){const el=$("#"+inId);const v=el.value.trim();if(!v)return;
+  D[key].push(v);el.value="";save();renderChips();el.focus();}
+function switchTab(which){
+  $("#tEdit").classList.toggle("on",which==="edit");
+  $("#tView").classList.toggle("on",which==="view");
+  $("#editPane").classList.toggle("hidden",which!=="edit");
+  $("#viewPane").classList.toggle("hidden",which!=="view");
+  if(which==="view"){
+    const prev=(moodLog()[yesterdayKey()]||{}).axes;
+    $("#preview").innerHTML=cardHTML({...D,q:todaysQuestion(),when:postmark(),prev},todayStr())
+      +(D.ps?`<div class="ps">P.S. ${esc(D.ps)}</div>`:"");
+    initScratch($("#preview"));
+    armPS();
+  }
+}
+
+/* ============================ 백업 ============================ */
+const BK_KEYS=["todayCard","cardBox","moodLog","sealedDates","sealStyle","sendProfile","pinHint"];
+function exportBackup(){
+  const data={_app:"today-card",_v:1};
+  BK_KEYS.forEach(k=>{const v=localStorage.getItem(k);if(v!=null)data[k]=v;});
+  const blob=new Blob([JSON.stringify(data,null,1)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`오늘의마음-백업-${dateKey()}.json`;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+  toast("📦 백업 파일을 저장했어요");
+}
+$("#impFile").addEventListener("change",e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const data=JSON.parse(r.result);
+      if(data._app!=="today-card")throw 0;
+      BK_KEYS.forEach(k=>{if(data[k]!=null)localStorage.setItem(k,data[k]);});
+      D=load()||blank();renderBuilder();
+      toast("📂 복원 완료! 다시 만나서 반가워 💗");
+    }catch(_){toast("백업 파일이 아닌 것 같아요");}
+    e.target.value="";
+  };
+  r.readAsText(f);
+});
+
+/* ============================ 봉인(공유) 모달 ============================ */
+let sealIdx=1;
+function paintSealDots(){
+  document.querySelectorAll(".sealdot").forEach(el=>{
+    const s=SEALS[+el.dataset.i];
+    el.style.background=`radial-gradient(circle at 35% 30%, ${s.l} 0%, ${s.c} 48%, ${s.d} 100%)`;
+    el.classList.toggle("on",+el.dataset.i===sealIdx);
+    el.onclick=()=>{sealIdx=+el.dataset.i;paintSealDots();};
+  });
+}
+function doShare(){
+  if(!D.name.trim()){toast("이름을 먼저 적어줘요");return;}
+  $("#shareModal").classList.remove("hidden");
+  $("#mStep1").classList.remove("hidden");$("#mStep2").classList.add("hidden");
+  $("#mPin").value="";$("#mErr").textContent="";
+  const pref=localStorage.getItem("sendProfile");
+  $("#mProfile").checked=(pref===null);
+  $("#mEnv").value="";
+  $("#mHint").value=localStorage.getItem("pinHint")||"";
+  try{const ss=JSON.parse(localStorage.getItem("sealStyle"));if(ss){sealIdx=ss.c??1;$("#mInit").value=ss.t||"";}}catch(_){ }
+  $("#mNight").checked=false;$("#mOpenAt").value="";
+  $("#mOpenAt").min=dateKey();
+  paintSealDots();
+  $("#mPin").focus();
+}
+function closeModal(){$("#shareModal").classList.add("hidden");}
+async function sealCard(){
+  const pin=$("#mPin").value.trim();
+  if(pin.length<4){$("#mErr").textContent="4자리 이상이어야 해요";return;}
+  $("#mErr").textContent="봉인하는 중...";
+  const prev=(moodLog()[yesterdayKey()]||{}).axes;
+  const payload={...D,date:todayStr(),when:postmark(),dday:calcDday(D.anniv),
+    q:D.qa?todaysQuestion():"",prev};
+  delete payload.lastDate;delete payload._newDay;
+  if(!prev)delete payload.prev;
+  if($("#mNight").checked)payload.nightOnly=true;
+  const oa=$("#mOpenAt").value;
+  if(oa&&oa>dateKey())payload.openAt=oa;
+  if(!$("#mProfile").checked){
+    for(const k of ["birth","mbti","blood","allergy","cantEat","bio","likes","dislikes"])delete payload[k];
+  }
+  const encd=await encryptCard(payload,pin);
+  let link=location.href.split("#")[0]+"#c="+encd;
+  const env=$("#mEnv").value.trim(), hint=$("#mHint").value.trim(), init=$("#mInit").value.trim();
+  if(env)link+="&t="+b64uText(env);
+  if(hint)link+="&h="+b64uText(hint);
+  if(init||sealIdx!==1)link+="&s="+sealIdx+"."+b64uText(init||"♥");
+  $("#mLink").value=link;
+  $("#mErr").textContent="";
+  localStorage.setItem("sendProfile","0");
+  if(hint)localStorage.setItem("pinHint",hint);
+  localStorage.setItem("sealStyle",JSON.stringify({c:sealIdx,t:init}));
+  markSealed();logDay(dateKey(),D);
+  $("#mStep1").classList.add("hidden");$("#mStep2").classList.remove("hidden");
+}
+async function copyLink(){
+  const t="💌 너에게 봉인된 마음이 도착했어\n"+$("#mLink").value;
+  let ok=false;
+  try{await navigator.clipboard.writeText(t);ok=true;}
+  catch(e){
+    try{const i=$("#mLink");i.focus();i.setSelectionRange(0,i.value.length);ok=document.execCommand("copy");}
+    catch(_){ok=false;}
+  }
+  toast(ok?"복사했어요! 비밀 숫자는 꼭 따로 💌":"복사가 안 됐어요 — 링크를 길게 눌러 직접 복사해줘요");
+}
+$("#mSeal").onclick=sealCard;
+$("#mCopy").onclick=copyLink;
+$("#mCancel").onclick=closeModal;
+$("#mClose").onclick=closeModal;
+$("#mPin").addEventListener("keydown",e=>{if(e.key==="Enter")sealCard();});
+if(navigator.share){
+  $("#mShare").classList.remove("hidden");
+  $("#mShare").onclick=async()=>{
+    try{await navigator.share({title:"오늘의 마음 💌",text:"💌 너에게 봉인된 마음이 도착했어",url:$("#mLink").value});}catch(e){}
+  };
+}
+
+/* ============================ 뷰어(봉인 편지) 화면 ============================ */
+function waxHTML(seal){
+  if(!seal)return "";
+  const s=SEALS[seal.c]||SEALS[1];
+  return `<div class="wax" id="waxSeal" style="background:radial-gradient(circle at 35% 30%, ${s.l} 0%, ${s.c} 48%, ${s.d} 100%)">${esc(seal.t)}</div>`;
+}
+function thickMsg(len){
+  if(!len)return "";
+  return len<450?"짧지만 꾹꾹 눌러 담은 편지야":len<900?"적당히 도톰한 편지야":"도톰한 세 장짜리 편지야 💌";
+}
+function renderLock(str,extras={}){
+  const app=$("#app");
+  const p=parsePayload(str);
+  let broken=false;
+  try{
+    if(p.declared!==null&&p.payload.length!==p.declared)broken=true;
+    else if(unb64u(p.payload).length<44)broken=true;
+  }catch(e){broken=true;}
+  if(broken){
+    app.innerHTML=`<div class="lock"><div class="card">
+      <div class="lockem" style="animation:none">🥺</div>
+      <h2>링크가 중간에 잘린 것 같아요</h2>
+      <p>메신저로 옮기다 뒷부분이 잘렸을 수 있어요.<br>보낸 사람에게 <b>전체 링크</b>를 다시 받아줘요.</p>
+    </div></div>`;
+    return;
+  }
+  const tm=thickMsg(p.declared||p.payload.length);
+  app.innerHTML=`<div class="lock"><div class="card" id="lockCard">
+    <div class="lockart">
+      <div class="lockem" id="lockEm">💌</div>
+      ${waxHTML(extras.seal)}
+    </div>
+    ${extras.env?`<div class="envline">“${esc(extras.env)}”</div>`:""}
+    <h2>봉인된 마음이 도착했어요</h2>
+    ${tm?`<p class="thick">📮 ${tm}</p>`:""}
+    <p>둘만 아는 숫자를 입력하면 열려요.</p>
+    <input type="password" inputmode="numeric" id="pin" placeholder="둘만 아는 숫자" autocomplete="off">
+    ${extras.hint?`<div class="hintline">💡 힌트: ${esc(extras.hint)}</div>`:""}
+    <div class="err" id="err"></div>
+    <button class="btn pri block" id="openBtn">💗 봉인 뜯기</button>
+  </div></div>`;
+  const open=async()=>{
+    const pin=$("#pin").value.trim();
+    if(pin.length<4){$("#err").textContent="숫자를 확인해줘요";return;}
+    $("#err").textContent="여는 중...";
+    try{
+      const d=await decryptCard(str,pin);
+      $("#err").textContent="";
+      // 시간 봉인 검사
+      if(d.openAt&&dateKey()<d.openAt){renderWaitDate(d);return;}
+      if(d.nightOnly&&!isNight()){renderWaitNight(d);return;}
+      $("#openBtn").textContent="열리는 중… 💗";
+      $("#openBtn").disabled=true;
+      const wax=$("#waxSeal");
+      if(wax)wax.classList.add("crack");
+      setTimeout(()=>$("#lockEm").classList.add("tear"),wax?280:0);
+      setTimeout(()=>{heartBurst();showViewer(d);window.scrollTo(0,0);},wax?1050:780);
+    }catch(e){
+      $("#err").textContent="음... 우리만 아는 숫자가 아닌 것 같아요";
+      const c=$("#lockCard");c.classList.remove("shake");void c.offsetWidth;c.classList.add("shake");
+    }
+  };
+  $("#openBtn").onclick=open;
+  $("#pin").addEventListener("keydown",e=>{if(e.key==="Enter")open();});
+  $("#pin").focus();
+}
+function renderWaitDate(d){
+  const [Y,Mo,Da]=d.openAt.split("-");
+  const n=Math.ceil((new Date(d.openAt+"T00:00:00")-new Date(dateKey()+"T00:00:00"))/864e5);
+  $("#app").innerHTML=`<div class="lock"><div class="card">
+    <div class="lockem" style="animation:none">⏳</div>
+    <h2>아직 봉인된 편지야</h2>
+    <p>${esc(d.name||"")}의 이 편지는 <b>${+Mo}월 ${+Da}일</b>에 열려요.<br>
+    <span style="font-size:16px;font-weight:800;color:var(--accent)">D-${n}</span><br><br>
+    그날, 이 링크로 다시 와줘.<br>기다림도 선물이야 💗</p>
+  </div></div>`;
+}
+function renderWaitNight(d){
+  $("#app").innerHTML=`<div class="lock"><div class="card">
+    <div class="lockem">🌙</div>
+    <h2>이 편지는 밤에 열려요</h2>
+    <p>${esc(d.name||"")}이 자기 전에 읽어 달래.<br>
+    오늘 밤 10시, 이불 속에서 다시 와줘 🌙<br><br>
+    <span style="font-size:12px">링크는 그대로 간직해줘</span></p>
+  </div></div>`;
+}
+function showViewer(d){
+  $("#app").innerHTML=`
+    <header class="top"><h1>오늘의 마음 💌</h1><p>${esc(d.name||"")}의 마음이 도착했어요 💗</p></header>
+    <div class="pop-in">${cardHTML(d,d.date||todayStr())}</div>
+    ${d.ps?`<div class="ps">P.S. ${esc(d.ps)}</div>`:""}
+    <div class="viewer-actions">
+      <button class="btn pri block" id="replyBtn">💌 나도 오늘의 마음 보내기</button>
+      <button class="btn ghost block" id="keepBtn" style="margin-top:8px">📥 이 마음 간직하기</button>
+    </div>
+    <div class="hint">둘만 아는 숫자로 가볍게 잠근 카드예요 💗</div>`;
+  initScratch();
+  armPS();
+  $("#replyBtn").onclick=()=>{
+    history.replaceState(null,"",location.pathname+location.search);
+    renderBuilder();window.scrollTo(0,0);
+    toast("이제 너의 마음을 적어줘 💗");
+  };
+  $("#keepBtn").onclick=()=>{
+    if(keepCard(d)){$("#keepBtn").textContent="💝 간직했어요";$("#keepBtn").disabled=true;}
+  };
+}
+function keepCard(d){
+  const box=cardBox();
+  const key=(d.date||"")+"|"+(d.name||"")+"|"+(d.memo||"");
+  if(box.some(b=>((b.data.date||"")+"|"+(b.data.name||"")+"|"+(b.data.memo||""))===key)){
+    toast("이미 간직한 카드예요 💝");return false;
+  }
+  box.push({saved:todayStr(),data:d});
+  localStorage.setItem("cardBox",JSON.stringify(box));
+  toast("💝 보관함에 간직했어요");
+  return true;
+}
+function renderBox(){
+  const box=cardBox().slice().reverse();
+  $("#app").innerHTML=`
+    <header class="top"><h1>받은 마음 보관함 💝</h1><p>간직해 둔 ${box.length}장의 카드</p></header>
+    <button class="btn ghost block" id="backBtn" style="margin-bottom:16px">← 돌아가기</button>
+    ${box.map(b=>`<div class="boxcard">${cardHTML(b.data,b.data.date||b.saved,{reveal:true})}
+      ${b.data.ps?`<div class="boxps">P.S. ${esc(b.data.ps)}</div>`:""}</div>`).join("")}`;
+  $("#backBtn").onclick=()=>{renderBuilder();window.scrollTo(0,0);};
+  window.scrollTo(0,0);
+}
+function heartBurst(){
+  const c=document.createElement("div");c.className="burst";
+  const ems=["💗","💕","🩷","💘"];
+  for(let i=0;i<12;i++){
+    const s=document.createElement("span");
+    s.textContent=ems[i%ems.length];
+    s.style.left=(15+Math.random()*70)+"%";
+    s.style.top=(30+Math.random()*35)+"%";
+    s.style.animationDelay=(Math.random()*.35)+"s";
+    c.appendChild(s);
+  }
+  document.body.appendChild(c);
+  setTimeout(()=>c.remove(),1900);
+}
+
+/* ============================ 떠다니는 하트 배경 ============================ */
+(function floatyHearts(){
+  const c=document.createElement("div");c.className="floaty";
+  const ems=isNight()?["💗","🌙","💌","⭐","✨","🩷","🌙"]:["💗","🤍","💌","🩷","✨","💗","🤍"];
+  for(let i=0;i<7;i++){
+    const s=document.createElement("span");
+    s.textContent=ems[i];
+    s.style.left=(4+Math.random()*92)+"%";
+    s.style.animationDuration=(14+Math.random()*11)+"s";
+    s.style.animationDelay=(-Math.random()*22)+"s";
+    s.style.fontSize=(12+Math.random()*11)+"px";
+    c.appendChild(s);
+  }
+  document.body.appendChild(c);
+})();
+
+/* ============================ 진입점 ============================ */
+(function(){
+  const h=location.hash;
+  const mc=h.match(/[#&]c=([^&]+)/);
+  if(mc){
+    const g=k=>{const m=h.match(new RegExp("[#&]"+k+"=([^&]+)"));return m?m[1]:null;};
+    const extras={};
+    try{const t=g("t");if(t)extras.env=unb64uText(t);}catch(_){ }
+    try{const hh=g("h");if(hh)extras.hint=unb64uText(hh);}catch(_){ }
+    try{
+      const s=g("s");
+      if(s){const i=s.indexOf(".");extras.seal={c:+s.slice(0,i)||0,t:unb64uText(s.slice(i+1))};}
+    }catch(_){ }
+    renderLock(mc[1],extras);
+  }else{
+    renderBuilder();
+    if(D._newDay){
+      delete D._newDay;save();
+      toast("새로운 하루! 오늘의 마음을 새로 적어줘 💌");
+    }else{save();}
+  }
+})();
+</script>
+</html>
