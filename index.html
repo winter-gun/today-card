@@ -304,6 +304,37 @@
   .lockstamp{position:absolute;top:14px;right:16px;width:40px;height:48px;
     border:1.5px dashed var(--accent2);border-radius:6px;display:grid;place-items:center;
     font-size:19px;background:var(--stampbg);transform:rotate(5deg)}
+
+  /* 우체국 */
+  .candle{color:var(--accent);font-size:12.5px;font-weight:700;margin-top:5px}
+  .candle .fl{display:inline-block;animation:flick 1.6s ease-in-out infinite}
+  @keyframes flick{0%,100%{transform:scale(1) rotate(-3deg);opacity:1}
+    50%{transform:scale(1.14) rotate(3deg);opacity:.85}}
+  .sentlist{display:flex;flex-direction:column;gap:8px}
+  .sentrow{display:flex;align-items:center;gap:10px;background:var(--field);
+    border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:13px}
+  .sentrow .ic{font-size:17px;flex:none}
+  .sentrow .tx{flex:1;line-height:1.35}
+  .sentrow .tx b{font-weight:700}
+  .sentrow .tx small{color:var(--ink2);font-size:11px}
+  .burnnote{background:#fbe6de;border:1px solid #f0c9b8;color:#a4522f;border-radius:12px;
+    padding:9px 12px;font-size:12.5px;font-weight:700;text-align:center;margin-bottom:12px}
+  @media (prefers-color-scheme: dark){
+    .burnnote{background:#3a2620;border-color:#5a3628;color:#e8a184}
+  }
+  .burning{position:relative;animation:burnaway 2.6s ease-in forwards}
+  @keyframes burnaway{
+    0%{filter:none;opacity:1;transform:scale(1)}
+    35%{filter:sepia(.7) contrast(1.25) brightness(.92)}
+    75%{filter:sepia(1) contrast(1.6) brightness(.55);opacity:.55;transform:scale(.985) rotate(-.6deg)}
+    100%{filter:sepia(1) contrast(2) brightness(.2);opacity:0;transform:scale(.94) rotate(-1.5deg)}
+  }
+  .ember{position:fixed;inset:0;pointer-events:none;z-index:70}
+  .ember span{position:absolute;font-size:15px;opacity:0;animation:emberup 2.4s ease-out forwards}
+  @keyframes emberup{0%{transform:translateY(0) scale(.6);opacity:0}
+    20%{opacity:.95}100%{transform:translateY(-190px) scale(1.15) rotate(30deg);opacity:0}}
+  .ashline{text-align:center;color:var(--ink2);font-size:13.5px;margin-top:18px;
+    font-family:'Nanum Pen Script','Apple SD Gothic Neo',cursive;font-size:20px}
   .boxps{text-align:center;font-family:'Nanum Pen Script','Apple SD Gothic Neo',cursive;
     font-size:20px;margin:10px 0 22px;color:var(--ink)}
   .spark{width:100%;height:auto}
@@ -347,6 +378,23 @@
         <label class="f">이 날부터 열 수 있어요</label>
         <input type="date" id="mOpenAt">
         <div class="ckhint" style="margin-top:6px;text-align:left">예: 100일에 맞춰서 — 그날까지 봉인돼요</div>
+      </details>
+
+      <details class="mdet" id="poDet">
+        <summary>📮 우체국으로 부치기 (선택)</summary>
+        <div id="poOff" class="ckhint" style="text-align:left;margin-top:8px">
+          우체국을 연결하면 타버리는 편지·등기우편·예약 배달을 쓸 수 있어요.<br>
+          아래 <b>📮 우체국 연결</b>에서 주소를 넣어줘요.
+        </div>
+        <div id="poOn" class="hidden">
+          <label class="ck" style="justify-content:flex-start"><input type="checkbox" id="mBurn"> 🔥 한 번 읽으면 타버려요</label>
+          <label class="ck" style="justify-content:flex-start"><input type="checkbox" id="mReceipt"> 📬 열어보면 나에게 알려줘요</label>
+          <label class="f">🌅 이 시각에 배달</label>
+          <input type="datetime-local" id="mDeliver">
+          <div class="ckhint" style="margin-top:6px;text-align:left">
+            비워두면 바로 배달돼요 · 링크도 짧아져요
+          </div>
+        </div>
       </details>
 
       <div class="err" id="mErr"></div>
@@ -693,7 +741,8 @@ function armPS(){
 /* localStorage 키는 전부 todaycard.* 네임스페이스 — 같은 도메인의 다른 앱과 절대 안 섞이게 */
 const K={data:"todaycard.data",box:"todaycard.box",log:"todaycard.moodlog",
   sealed:"todaycard.sealed",style:"todaycard.sealstyle",prof:"todaycard.sendprofile",hint:"todaycard.pinhint",
-  stamps:"todaycard.stamps",count:"todaycard.sealcount",lastopen:"todaycard.lastopen"};
+  stamps:"todaycard.stamps",count:"todaycard.sealcount",lastopen:"todaycard.lastopen",
+  post:"todaycard.postoffice",pair:"todaycard.paircode",dev:"todaycard.deviceid",sent:"todaycard.sent"};
 (function migrateKeys(){
   const old={todayCard:K.data,cardBox:K.box,moodLog:K.log,sealedDates:K.sealed,
     sealStyle:K.style,sendProfile:K.prof,pinHint:K.hint};
@@ -766,6 +815,96 @@ function sparkHTML(){
   return `<div class="panel"><h2><span class="em">📈</span> 지난 7일의 마음</h2>
     <svg class="spark" viewBox="0 0 214 82">${bars}</svg></div>`;
 }
+
+/* ============================ 📮 우체국 (선택 연결) ============================ */
+/* 서버에는 암호문만 올라간다 — PIN도 '우리 코드' 원문도 기기 밖으로 나가지 않는다 */
+function postOffice(){return (localStorage.getItem(K.post)||"").replace(/\/+$/,"");}
+function hasPost(){return !!postOffice();}
+function deviceId(){
+  let d=localStorage.getItem(K.dev);
+  if(!d){d=b64u(crypto.getRandomValues(new Uint8Array(9)));localStorage.setItem(K.dev,d);}
+  return d;
+}
+async function pairId(){
+  const code=(localStorage.getItem(K.pair)||"").trim();
+  if(!code)return null;
+  const h=await crypto.subtle.digest("SHA-256",enc.encode("todaycard|"+code));
+  return b64u(h).slice(0,22);
+}
+async function poFetch(path,opts,ms){
+  const base=postOffice();
+  if(!base)throw new Error("no_post_office");
+  const ac=new AbortController();
+  const t=setTimeout(()=>ac.abort(),ms||9000);
+  try{
+    const res=await fetch(base+path,{...(opts||{}),signal:ac.signal,
+      headers:{"Content-Type":"application/json",...((opts||{}).headers||{})}});
+    if(!res.ok)throw new Error("po_"+res.status);
+    return await res.json();
+  }finally{clearTimeout(t);}
+}
+function sentList(){try{return JSON.parse(localStorage.getItem(K.sent))||[]}catch(e){return []}}
+function rememberSent(rec){
+  const l=sentList();
+  l.push(rec);
+  while(l.length>12)l.shift();
+  localStorage.setItem(K.sent,JSON.stringify(l));
+}
+async function refreshSent(){
+  if(!hasPost())return;
+  const l=sentList();
+  const live=l.filter(r=>!r.openedAt&&!r.burned&&!r.gone);
+  if(!live.length)return;
+  await Promise.all(live.slice(-6).map(async r=>{
+    try{
+      const s=await poFetch("/letter/"+r.id+"/status",{method:"GET"},7000);
+      if(s.gone)r.gone=true;
+      if(s.burned)r.burned=true;
+      if(s.openedAt)r.openedAt=s.openedAt;
+    }catch(_){ }
+  }));
+  localStorage.setItem(K.sent,JSON.stringify(l));
+  const box=$("#sentBox");
+  if(box)box.innerHTML=sentRowsHTML();
+}
+function hhmm(ts){
+  const d=new Date(ts);const h=d.getHours();
+  return `${d.getMonth()+1}.${d.getDate()} ${h<12?"오전":"오후"} ${((h+11)%12)+1}:${String(d.getMinutes()).padStart(2,"0")}`;
+}
+function sentRowsHTML(){
+  const l=sentList().slice().reverse().slice(0,6);
+  if(!l.length)return `<div class="ckhint" style="text-align:left">아직 우체국으로 부친 편지가 없어요</div>`;
+  return `<div class="sentlist">${l.map(r=>{
+    let ic="📮",tx="배달함에 있어요",sub="아직 봉투가 그대로예요";
+    if(r.deliverAt&&Date.now()<r.deliverAt){ic="🌅";tx="배달 대기 중";sub=hhmm(r.deliverAt)+"에 도착해요";}
+    else if(r.burned){ic="🔥";tx="읽고 타버렸어요";sub=r.openedAt?hhmm(r.openedAt)+" 개봉":"재만 남았어요";}
+    else if(r.openedAt){ic="💗";tx="봉투를 열었어요";sub=hhmm(r.openedAt)+" 개봉";}
+    else if(r.gone){ic="🍂";tx="편지가 사라졌어요";sub="보관 기간이 지났어요";}
+    return `<div class="sentrow"><span class="ic">${ic}</span>
+      <span class="tx"><b>${tx}</b><br><small>${esc(r.label||"")}${r.label?" · ":""}${sub}</small></span></div>`;
+  }).join("")}</div>`;
+}
+/* 촛불 프레즌스 */
+let candleTimer=null;
+async function candleTick(){
+  try{
+    const p=await pairId();
+    if(!p||!hasPost())return;
+    const me=deviceId();
+    await poFetch("/presence/"+p,{method:"POST",body:JSON.stringify({me})},7000);
+    const r=await poFetch("/presence/"+p+"?me="+encodeURIComponent(me),{method:"GET"},7000);
+    const el=$("#candle");
+    if(el)el.innerHTML=r.partner
+      ?`<span class="fl">🕯️</span> 지금 그 사람도 편지함 앞에 있어요 <span class="fl">🕯️</span>`:"";
+  }catch(_){ }
+}
+function startCandle(){
+  stopCandle();
+  if(!hasPost()||!localStorage.getItem(K.pair))return;
+  candleTick();
+  candleTimer=setInterval(()=>{if(!document.hidden)candleTick();},25000);
+}
+function stopCandle(){if(candleTimer){clearInterval(candleTimer);candleTimer=null;}}
 
 /* ============================ 우표 수집책 ============================ */
 const STAMPS=[
@@ -996,6 +1135,7 @@ function renderBuilder(){
   <header class="top"><h1>오늘의 마음 💌</h1>
     <p>${night?"하루 끝, 너에게 보내는 오늘의 나":"하루 한 장, 너에게 보내는 오늘의 나"}</p>
     ${streakLine?`<div class="streak">${streakLine}</div>`:""}
+    <div class="candle" id="candle"></div>
     ${box.length?`<p style="margin-top:6px"><a href="#" class="boxlink" id="boxLink">💝 받은 마음 ${box.length}장 보러가기</a></p>`:""}
     <p style="margin-top:4px"><a href="#" class="boxlink" id="albumLink">🎫 우표 수집책 ${Object.keys(myStamps()).length}/${STAMPS.length}</a></p>
   </header>
@@ -1096,6 +1236,22 @@ function renderBuilder(){
 
     ${sparkHTML()}
 
+    ${hasPost()?`<div class="panel"><h2><span class="em">📮</span> 내가 부친 편지</h2>
+      <div id="sentBox">${sentRowsHTML()}</div></div>`:""}
+
+    <div class="panel">
+      <h2><span class="em">📮</span> 우체국 연결 <span style="font-weight:400;font-size:11.5px">· 선택</span></h2>
+      <div class="ckhint" style="text-align:left;margin-bottom:2px">
+        연결하면 🔥타버리는 편지 · 📬등기우편 · 🌅예약 배달 · 🕯️촛불이 열려요.<br>
+        서버엔 암호문만 올라가고 비밀 숫자는 절대 나가지 않아요.
+      </div>
+      <label class="f">우체국 주소</label>
+      <input type="text" id="f_post" value="${esc(localStorage.getItem(K.post)||"")}" placeholder="https://....workers.dev">
+      <label class="f">우리 코드 — 둘이 똑같이 적어요 (촛불용)</label>
+      <input type="text" id="f_pair" value="${esc(localStorage.getItem(K.pair)||"")}" placeholder="예: 우리처음만난날">
+      <div class="ckhint" style="text-align:left;margin-top:6px">코드 자체는 안 보내고 뒤섞은 흔적만 보내요</div>
+    </div>
+
     <button class="btn pri block" id="shareBtn">💌 마음 봉인해서 보내기</button>
     <div class="hint">쓰는 중인 내용은 이 기기에 자동 저장돼요 · 언제든 지울 수 있어요</div>
     <div class="row2" style="margin-top:10px">
@@ -1158,6 +1314,19 @@ function renderBuilder(){
   });
   $("#photoDel").onclick=()=>{D.photo="";save();renderPolaPrev();};
   initTuneRec();
+
+  const pf=$("#f_post"),pr=$("#f_pair");
+  let poTimer=null;
+  pf.addEventListener("input",()=>{
+    localStorage.setItem(K.post,pf.value.trim());
+    clearTimeout(poTimer);poTimer=setTimeout(()=>{startCandle();},700);
+  });
+  pr.addEventListener("input",()=>{
+    localStorage.setItem(K.pair,pr.value.trim());
+    clearTimeout(poTimer);poTimer=setTimeout(()=>{startCandle();},700);
+  });
+  startCandle();
+  refreshSent();
 }
 function renderChips(){
   const mk=(arr,box,type)=>{$("#"+box).innerHTML=arr.map((x,i)=>
@@ -1247,6 +1416,10 @@ function doShare(){
   $("#mOpenAt").min=dateKey();
   pickStamp=null;
   paintSealDots();paintStampPick();
+  const on=hasPost();
+  $("#poOn").classList.toggle("hidden",!on);
+  $("#poOff").classList.toggle("hidden",on);
+  $("#mBurn").checked=false;$("#mReceipt").checked=false;$("#mDeliver").value="";
   $("#mPin").focus();
 }
 function closeModal(){$("#shareModal").classList.add("hidden");}
@@ -1268,14 +1441,37 @@ async function sealCard(){
     for(const k of ["birth","mbti","blood","allergy","cantEat","bio","likes","dislikes"])delete payload[k];
   }
   const encd=await encryptCard(payload,pin);
-  let link=location.href.split("#")[0]+"#c="+encd;
+
+  /* 우체국으로 부칠지 결정 */
+  const burn=hasPost()&&$("#mBurn").checked;
+  const receipt=hasPost()&&$("#mReceipt").checked;
+  const dlRaw=hasPost()?$("#mDeliver").value:"";
+  const dlAt=dlRaw?new Date(dlRaw).getTime():0;
+  const usePost=hasPost()&&(burn||receipt||(dlAt>Date.now()));
+
+  let head="#c="+encd;
+  if(usePost){
+    try{
+      const res=await poFetch("/letter",{method:"POST",
+        body:JSON.stringify({ct:encd,burn,deliverAt:dlAt>Date.now()?dlAt:null})},15000);
+      if(!res.id)throw new Error("no_id");
+      head="#p="+res.id;
+      rememberSent({id:res.id,at:Date.now(),burn,
+        deliverAt:dlAt>Date.now()?dlAt:null,
+        label:burn?"타버리는 편지":(dlAt>Date.now()?"예약 배달":"등기우편")});
+    }catch(e){
+      $("#mErr").textContent="우체국에 못 닿았어요 — 평소처럼 링크로 보낼게요";
+    }
+  }
+
+  let link=location.href.split("#")[0]+head;
   const env=$("#mEnv").value.trim(), hint=$("#mHint").value.trim(), init=$("#mInit").value.trim();
   if(env)link+="&t="+b64uText(env);
   if(hint)link+="&h="+b64uText(hint);
   if(init||sealIdx!==1)link+="&s="+sealIdx+"."+b64uText(init||"♥");
   if(pickedStamp)link+="&st="+b64uText(pickedStamp.em);
+  if(usePost&&head.startsWith("#p="))link+="&po="+b64uText(postOffice());
   $("#mLink").value=link;
-  $("#mErr").textContent="";
   localStorage.setItem(K.prof,"0");
   if(hint)localStorage.setItem(K.hint,hint);
   localStorage.setItem(K.style,JSON.stringify({c:sealIdx,t:init}));
@@ -1360,12 +1556,13 @@ function renderLock(str,extras={}){
       // 시간 봉인 검사
       if(d.openAt&&dateKey()<d.openAt){renderWaitDate(d);return;}
       if(d.nightOnly&&!isNight()){renderWaitNight(d);return;}
+      if(extras.onOpen){try{await extras.onOpen();}catch(_){ }}
       $("#openBtn").textContent="열리는 중… 💗";
       $("#openBtn").disabled=true;
       const wax=$("#waxSeal");
       if(wax)wax.classList.add("crack");
       setTimeout(()=>$("#lockEm").classList.add("tear"),wax?280:0);
-      setTimeout(()=>{heartBurst();showViewer(d);window.scrollTo(0,0);},wax?1050:780);
+      setTimeout(()=>{heartBurst();showViewer(d,extras.burn);window.scrollTo(0,0);},wax?1050:780);
     }catch(e){
       $("#err").textContent="음... 우리만 아는 숫자가 아닌 것 같아요";
       const c=$("#lockCard");c.classList.remove("shake");void c.offsetWidth;c.classList.add("shake");
@@ -1386,6 +1583,55 @@ function renderWaitDate(d){
     그날, 이 링크로 다시 와줘.<br>기다림도 선물이야 💗</p>
   </div></div>`;
 }
+/* ---------- 우체국 편지 수령 ---------- */
+function renderPoLoading(){
+  $("#app").innerHTML=`<div class="lock"><div class="card">
+    <div class="lockem">📮</div><h2>우체국에서 편지를 꺼내는 중…</h2>
+    <p>잠깐만 기다려줘요</p></div></div>`;
+}
+function renderWaitDelivery(at){
+  const mins=Math.max(1,Math.ceil((at-Date.now())/60000));
+  const dd=Math.floor(mins/1440),hh=Math.floor((mins%1440)/60),mm=mins%60;
+  const left=dd?`${dd}일 ${hh}시간 뒤`:(hh?`${hh}시간${mm?" "+mm+"분":""} 뒤`:`${mm}분 뒤`);
+  const when=hhmm(at);
+  $("#app").innerHTML=`<div class="lock"><div class="card">
+    <div class="lockem">🌅</div>
+    <h2>아직 배달 중이에요</h2>
+    <p>이 편지는 <b>${when}</b>에 도착해요.<br>
+    <span style="font-size:16px;font-weight:800;color:var(--accent)">${left}</span><br><br>
+    그때 이 링크로 다시 와줘 💗</p>
+  </div></div>`;
+}
+function renderAshes(){
+  $("#app").innerHTML=`<div class="lock"><div class="card">
+    <div class="lockem" style="animation:none">🕯️</div>
+    <h2>이미 재가 된 편지예요</h2>
+    <p>한 번만 읽을 수 있는 편지였어요.<br>
+    누군가 이미 읽고 태웠거나, 보관 기간이 지났어요.</p>
+    <button class="btn ghost block" id="homeBtn" style="margin-top:16px">💌 나도 마음 보내기</button>
+  </div></div>`;
+  $("#homeBtn").onclick=goReply;
+}
+async function openPostLetter(id,extras){
+  renderPoLoading();
+  let res;
+  try{
+    res=await poFetch("/letter/"+encodeURIComponent(id),{method:"GET"},12000);
+  }catch(e){
+    $("#app").innerHTML=`<div class="lock"><div class="card">
+      <div class="lockem" style="animation:none">🥺</div>
+      <h2>우체국에 닿지 못했어요</h2>
+      <p>인터넷이 불안하거나 우체국이 쉬는 중일 수 있어요.<br>잠시 뒤 다시 열어봐 줘요.</p>
+    </div></div>`;
+    return;
+  }
+  if(res.gone)return renderAshes();
+  if(res.pending)return renderWaitDelivery(res.deliverAt);
+  if(!res.ct)return renderAshes();
+  renderLock(res.ct,{...extras,burn:res.burn,
+    onOpen:()=>poFetch("/letter/"+encodeURIComponent(id)+"/open",
+      {method:"POST",body:JSON.stringify({})},9000)});
+}
 function renderWaitNight(d){
   $("#app").innerHTML=`<div class="lock"><div class="card">
     <div class="lockem">🌙</div>
@@ -1395,28 +1641,61 @@ function renderWaitNight(d){
     <span style="font-size:12px">링크는 그대로 간직해줘</span></p>
   </div></div>`;
 }
-function showViewer(d){
+function showViewer(d,burn){
   $("#app").innerHTML=`
     <header class="top"><h1>오늘의 마음 💌</h1><p>${esc(d.name||"")}의 마음이 도착했어요 💗</p></header>
-    <div class="pop-in">${cardHTML(d,d.date||todayStr())}</div>
+    ${burn?`<div class="burnnote">🔥 이 편지는 한 번만 읽을 수 있어요<br>천천히 읽고, 다 읽으면 태워줘요</div>`:""}
+    <div class="pop-in" id="cardWrap">${cardHTML(d,d.date||todayStr())}</div>
     ${d.ps?`<div class="ps">P.S. ${esc(d.ps)}</div>`:""}
-    <div class="viewer-actions">
-      <button class="btn pri block" id="replyBtn">💌 나도 오늘의 마음 보내기</button>
-      <button class="btn ghost block" id="keepBtn" style="margin-top:8px">📥 이 마음 간직하기</button>
+    <div class="viewer-actions" id="vAct">
+      ${burn?`<button class="btn pri block" id="burnBtn">🔥 다 읽었어 · 태우기</button>`:""}
+      <button class="btn ${burn?"ghost":"pri"} block" id="replyBtn" ${burn?'style="margin-top:8px"':""}>💌 나도 오늘의 마음 보내기</button>
+      ${burn?"":`<button class="btn ghost block" id="keepBtn" style="margin-top:8px">📥 이 마음 간직하기</button>`}
     </div>
-    <div class="hint">둘만 아는 숫자로 가볍게 잠근 카드예요 💗</div>`;
+    <div class="hint">${burn?"태우고 나면 어디에도 남지 않아요":"둘만 아는 숫자로 가볍게 잠근 카드예요 💗"}</div>`;
+  if(burn){
+    $("#burnBtn").onclick=()=>{
+      const w=$("#cardWrap");
+      w.classList.add("burning");
+      const ps=document.querySelector(".ps");if(ps)ps.classList.add("burning");
+      emberBurst();
+      $("#vAct").innerHTML=`<button class="btn ghost block" id="replyBtn2">💌 나도 오늘의 마음 보내기</button>`;
+      $("#replyBtn2").onclick=goReply;
+      setTimeout(()=>{
+        w.innerHTML=`<div class="ashline">…재만 남았어요.<br>그래도 다 읽었어요 🤍</div>`;
+        w.classList.remove("burning");w.style.opacity=1;
+        if(ps)ps.remove();
+      },2600);
+    };
+  }
   initScratch();
   initTunes();
   armPS();
   localStorage.setItem(K.lastopen,String(Date.now()));
-  $("#replyBtn").onclick=()=>{
-    history.replaceState(null,"",location.pathname+location.search);
-    renderBuilder();window.scrollTo(0,0);
-    toast("이제 너의 마음을 적어줘 💗");
+  $("#replyBtn").onclick=goReply;
+  const kb=$("#keepBtn");
+  if(kb)kb.onclick=()=>{
+    if(keepCard(d)){kb.textContent="💝 간직했어요";kb.disabled=true;}
   };
-  $("#keepBtn").onclick=()=>{
-    if(keepCard(d)){$("#keepBtn").textContent="💝 간직했어요";$("#keepBtn").disabled=true;}
-  };
+}
+function goReply(){
+  history.replaceState(null,"",location.pathname+location.search);
+  renderBuilder();window.scrollTo(0,0);
+  toast("이제 너의 마음을 적어줘 💗");
+}
+function emberBurst(){
+  const c=document.createElement("div");c.className="ember";
+  const ems=["🔥","✨","🔸","·"];
+  for(let i=0;i<18;i++){
+    const s=document.createElement("span");
+    s.textContent=ems[i%ems.length];
+    s.style.left=(12+Math.random()*76)+"%";
+    s.style.top=(35+Math.random()*40)+"%";
+    s.style.animationDelay=(Math.random()*1.1)+"s";
+    c.appendChild(s);
+  }
+  document.body.appendChild(c);
+  setTimeout(()=>c.remove(),3600);
 }
 function keepCard(d){
   const box=cardBox();
@@ -1475,7 +1754,8 @@ function heartBurst(){
 (function(){
   const h=location.hash;
   const mc=h.match(/[#&]c=([^&]+)/);
-  if(mc){
+  const mp=h.match(/[#&]p=([\w-]{6,40})/);
+  if(mc||mp){
     const g=k=>{const m=h.match(new RegExp("[#&]"+k+"=([^&]+)"));return m?m[1]:null;};
     const extras={};
     try{const t=g("t");if(t)extras.env=unb64uText(t);}catch(_){ }
@@ -1485,7 +1765,12 @@ function heartBurst(){
       if(s){const i=s.indexOf(".");extras.seal={c:+s.slice(0,i)||0,t:unb64uText(s.slice(i+1))};}
     }catch(_){ }
     try{const st=g("st");if(st)extras.st=unb64uText(st);}catch(_){ }
-    renderLock(mc[1],extras);
+    if(mp){
+      // 받는 사람이 우체국 주소를 모를 수 있으니, 링크에 실린 주소(&po=)를 우선 사용
+      try{const po=g("po");if(po)localStorage.setItem(K.post,unb64uText(po));}catch(_){ }
+      openPostLetter(mp[1],extras);
+    }
+    else renderLock(mc[1],extras);
   }else{
     renderBuilder();
     if(D._newDay){

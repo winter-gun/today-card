@@ -1,0 +1,9 @@
+name = "today-card-post-office"
+main = "index.js"
+compatibility_date = "2026-07-01"
+
+# KV 네임스페이스 — 배포 전에 아래 명령으로 만들고 id를 채워 넣으세요
+#   npx wrangler kv namespace create MAIL
+[[kv_namespaces]]
+binding = "MAIL"
+id = "PUT_YOUR_KV_ID_HERE"
