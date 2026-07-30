@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>오늘의 마음 💌 · 사용법</title>
+<meta property="og:title" content="오늘의 마음 💌 사용법">
+<meta property="og:description" content="하루 한 장, 너에게 보내는 마음 카드">
+<meta name="theme-color" content="#fdf3f5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fdf3f5; --bg2:#fbe7ed; --ink:#463539; --ink2:#8a6f76;
+    --card:#fffbfc; --line:#f2dbe1; --accent:#e8788f; --accent2:#f2a5b5;
+    --field:#fdf5f7; --shadow:0 12px 40px rgba(190,100,125,.16);
+    --warnbg:#fff2f5;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#241419; --bg2:#301b23; --ink:#f4e4e9; --ink2:#bb92a1;
+      --card:#2c1c23; --line:#452c35; --accent:#f08fa5; --accent2:#c76e85;
+      --field:#3a2530; --shadow:0 12px 40px rgba(0,0,0,.45);
+      --warnbg:#3a2530;
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:'Gowun Dodum',-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+    background:radial-gradient(120% 80% at 50% -10%,var(--bg2),var(--bg));
+    color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased;
+    min-height:100vh;padding:26px 16px 70px;
+  }
+  .wrap{max-width:520px;margin:0 auto}
+
+  header{text-align:center;margin-bottom:26px}
+  header h1{font-family:'Nanum Pen Script',cursive;font-weight:400;font-size:36px;margin:0}
+  header p{color:var(--ink2);font-size:14px;margin:2px 0 0}
+  .openapp{display:inline-block;margin-top:14px;background:linear-gradient(135deg,#ef8fa4,var(--accent));
+    color:#fff;text-decoration:none;font-weight:700;padding:12px 26px;border-radius:14px;font-size:15px;
+    box-shadow:0 6px 18px rgba(190,100,125,.3)}
+
+  .hero{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;
+    box-shadow:var(--shadow);text-align:center;margin-bottom:26px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;inset:8px;border:1.5px dashed rgba(232,120,143,.28);
+    border-radius:16px;pointer-events:none}
+  .hero .big{font-size:19px;font-weight:700;line-height:1.5}
+  .hero .sm{color:var(--ink2);font-size:13.5px;margin-top:8px}
+
+  h2{font-size:17px;margin:32px 0 12px;display:flex;align-items:center;gap:9px}
+  h2 .n{background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;
+    display:grid;place-items:center;font-size:14px;flex:none}
+  .where{font-size:13px;color:var(--ink2);background:var(--field);border:1px solid var(--line);
+    border-radius:12px;padding:9px 13px;margin-bottom:12px}
+  .where b{color:var(--ink)}
+
+  .step{background:var(--card);border:1px solid var(--line);border-radius:18px;
+    padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .step .t{font-weight:700;font-size:15px;margin-bottom:5px}
+  .step .d{font-size:13.5px;color:var(--ink2)}
+  .step .d b{color:var(--ink)}
+  .chipline{display:inline-block;background:var(--field);border:1px solid var(--line);
+    border-radius:8px;padding:1px 8px;font-size:12.5px;font-weight:700;color:var(--ink);
+    white-space:nowrap;margin:0 1px}
+  .note{color:var(--accent);font-size:12.5px;display:block;margin-top:6px}
+
+  .warn{background:var(--warnbg);border:1px dashed var(--accent2);border-radius:14px;
+    padding:13px 15px;font-size:13.5px;margin:14px 0}
+  .warn b{color:var(--accent)}
+  .warn ul{margin:8px 0 0;padding-left:18px}
+  .warn li{margin-bottom:6px}
+  .warn li:last-child{margin-bottom:0}
+
+  table{width:100%;border-collapse:collapse;background:var(--card);
+    border-radius:16px;overflow:hidden;box-shadow:var(--shadow);font-size:13.5px}
+  th,td{text-align:left;padding:11px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--field);font-size:12px;color:var(--ink2);font-weight:700}
+  tr:last-child td{border-bottom:0}
+  td.k{white-space:nowrap;font-weight:700;width:34%}
+
+  details{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:13px 16px;margin-bottom:10px;box-shadow:var(--shadow)}
+  summary{cursor:pointer;font-weight:700;font-size:14.5px;list-style-position:inside}
+  details p{font-size:13.5px;color:var(--ink2);margin:9px 0 0}
+  details p b{color:var(--ink)}
+
+  .foot{text-align:center;color:var(--ink2);font-size:12.5px;margin-top:34px}
+  .hand{font-family:'Nanum Pen Script',cursive;font-size:22px;color:var(--ink);
+    text-align:center;margin:26px 0 0}
+</style>
+
+<div class="wrap">
+
+<header>
+  <h1>오늘의 마음 💌</h1>
+  <p>사용법 — 3분이면 충분해요</p>
+  <a class="openapp" href="./">앱 열기 →</a>
+</header>
+
+<div class="hero">
+  <div class="big">하루 한 장,<br>오늘의 내 마음을 카드로 만들어<br>그 사람에게만 보내요</div>
+  <div class="sm">둘만 아는 숫자로 잠그니까,<br>숫자를 모르면 링크가 있어도 열 수 없어요</div>
+</div>
+
+<h2><span class="n">1</span> 시작하기 — 딱 3단계</h2>
+
+<div class="step">
+  <div class="t">① 내 이름부터</div>
+  <div class="d">
+    화면을 내려 <b>🌱 나는 이런 사람</b> 칸의 <b>내 이름/애칭</b>에
+    <b>내 이름</b>(상대가 나를 부르는 이름)을 적어요. 딱 이것만 필수예요.<br>
+    그 다음 슬라이더 6개를 오늘 기분대로 움직이고, 하고 싶은 말을 적어요.
+    나머지는 다 건너뛰어도 괜찮아요.
+  </div>
+</div>
+
+<div class="step">
+  <div class="t">② <span class="chipline">💌 마음 봉인해서 보내기</span></div>
+  <div class="d">
+    <b>둘만 아는 숫자</b>를 정해요. 기념일처럼 <b>상대가 이미 아는 숫자</b>가 제일 좋아요.<br>
+    4자리부터 되지만 <b>6자리 이상</b>(기념일 8자리)을 권해요.
+    <span class="note">※ 이 숫자는 앱 어디에도 저장되지 않아요 — 잊으면 그 카드는 영영 못 열어요</span>
+  </div>
+</div>
+
+<div class="step">
+  <div class="t">③ 링크를 카톡으로 보내요</div>
+  <div class="d">
+    <span class="chipline">🔗 링크 복사</span> 또는 <span class="chipline">📮 바로 보내기</span>를 누르면 끝.<br>
+    상대는 링크를 열고 숫자를 넣으면 봉투가 뜯겨요. <b>상대는 아무것도 설치 안 해도 돼요.</b>
+    <span class="note">※ 📮 바로 보내기는 폰에서만 보여요 — PC에서는 🔗 링크 복사를 쓰면 돼요</span>
+  </div>
+</div>
+
+<div class="warn">
+  <b>💡 꼭 알아둘 두 가지</b>
+  <ul>
+    <li><b>숫자를 링크와 같은 카톡방에 보내면 잠근 의미가 없어요.</b>
+        둘이 이미 아는 숫자로 정하면 아예 안 보내도 돼요.</li>
+    <li><b>오늘 쓴 카드는 자정이 지나면 비워져요</b> — 낙서·사진·멜로디까지 같이요.
+        그날 안에 봉인해서 보내주세요.</li>
+  </ul>
+</div>
+
+<h2><span class="n">2</span> 카드에 담기는 것</h2>
+
+<table>
+  <tr><th>어디에</th><th>무엇이</th></tr>
+  <tr><td class="k">🌡️ 마음 온도</td><td>에너지·기분·스트레스·사교성·집중력·식욕 6가지를 육각형 그림으로. <b>어제 모양이 점선</b>으로 같이 보여요</td></tr>
+  <tr><td class="k">💗 보고싶음</td><td>오늘 얼마나 보고싶은지 게이지</td></tr>
+  <tr><td class="k">💬 오늘의 질문</td><td>매일 바뀌고, <b>같은 날엔 둘 다 같은 질문</b>을 받아요</td></tr>
+  <tr><td class="k">🍽️ 먹고 싶은 것</td><td>오늘 같이 먹고 싶은 메뉴</td></tr>
+  <tr><td class="k">💕 이런 말 해줘<br>🙏 오늘은 피해줘</td><td>오늘의 나 사용설명서</td></tr>
+  <tr><td class="k">💌 너에게 한 줄</td><td>오늘 제일 하고 싶은 말</td></tr>
+  <tr><td class="k">🌱 나는 이런 사람</td><td>이름·생일·MBTI·알러지·못 먹는 것. 한 번만 적으면 계속 저장돼요.<br>
+    <b>카드에 같이 보내려면</b> 봉인할 때 <span class="chipline">🌱 내 소개도 함께 보내기</span>를 켜요
+    (두 번째부터는 기본으로 꺼져 있어요)</td></tr>
+</table>
+
+<h2><span class="n">3</span> 몰래 넣는 것들</h2>
+
+<div class="where">
+  📍 모두 <b>💗 오늘의 우리</b> 칸 아래에 있어요 — 접혀 있으니 <b>눌러서 펼치면</b> 나와요.
+</div>
+
+<details open>
+  <summary>🪙 몰래 한 줄</summary>
+  <p>은박에 가려져서 상대가 <b>손가락으로 긁어야</b> 보여요. 다 긁으면 하트가 팡 터져요.</p>
+</details>
+
+<details>
+  <summary>✒️ P.S. 추신</summary>
+  <p>카드를 <b>다 읽고 나서야</b> 여백에 천천히 떠올라요. 진짜 하고 싶었던 말을 여기에.</p>
+</details>
+
+<details>
+  <summary>🖋️ 여백 낙서</summary>
+  <p>손가락으로 그리면, 받는 사람 화면에서 <b>그린 순서 그대로 선이 다시 그려져요.</b> 못 그릴수록 귀여워요.</p>
+</details>
+
+<details>
+  <summary>📷 폴라로이드</summary>
+  <p>사진은 <b>아주 작게 뭉개져서</b>(얼굴을 알아보기 어려울 정도) 도착해요 — 분위기만 전하는 용도예요.
+  링크가 너무 길어지지 않게 하려는 것도 있어요.</p>
+</details>
+
+<details>
+  <summary>🎼 오르골 멜로디</summary>
+  <p>콧노래를 3~8초 흥얼거리면 <b>목소리는 사라지고 멜로디만</b> 태엽에 감겨요. 받는 사람이 태엽을 감으면 오르골 소리로 흘러나와요.</p>
+</details>
+
+<h2><span class="n">4</span> 봉투 꾸미기</h2>
+
+<div class="where">
+  📍 여기부터는 <b>💌 마음 봉인해서 보내기</b>를 누르면 뜨는 <b>봉인 창 안</b>에 있어요 —
+  숫자 넣는 화면에서 아래 항목을 펼치면 돼요.
+</div>
+
+<div class="step">
+  <div class="t">✉️ 겉봉투 꾸미기</div>
+  <div class="d">
+    <b>겉봉투 한 줄</b> — 뜯기 전에 보이는 문구 (예: "버스에서 읽지 마 🙈")<br>
+    <b>숫자 힌트</b> — 숫자를 까먹었을 때를 위한 단서<br>
+    <b>왁스 씰</b> — 우리 이니셜 도장. 봉인이 <b>쩍 갈라지며</b> 열려요
+    <span class="note">※ 겉봉투와 힌트는 잠기지 않아요. "우리가 시작한 날"처럼 정답을 알려주는 문구 말고,
+    "그날 ㅎㅎ"처럼 둘만 알아들을 정도로만 적어요</span>
+  </div>
+</div>
+
+<div class="step">
+  <div class="t">⏳ 시간 봉인</div>
+  <div class="d">
+    <b>🌙 밤에만</b> — 밤 10시~아침 6시에만 열려요. "자기 전에 읽어줘"<br>
+    <b>📅 이 날부터</b> — 정한 날까지 안 열려요. "100일에 열어봐"
+    <span class="note">※ 이건 상대 폰 시계 기준이라 마음먹으면 미리 열어볼 수도 있어요.
+    확실히 막으려면 6번의 🌅 예약 배달을 쓰세요</span>
+  </div>
+</div>
+
+<h2><span class="n">5</span> 쌓이는 것들</h2>
+
+<table>
+  <tr><td class="k">🎫 우표 수집책</td><td>보낼 때마다 우표가 모여요 (자정에 보내면 🦉, 1시간 안에 답장하면 ⚡ …). 모은 우표는 <b>봉투에 골라 붙여</b> 보낼 수 있어요</td></tr>
+  <tr><td class="k">💝 받은 마음</td><td>받은 카드를 <span class="chipline">📥 이 마음 간직하기</span>로 보관함에 모아둬요<br>
+    <span style="color:var(--accent);font-size:12.5px">(🔥 타버리는 편지는 간직할 수 없어요)</span></td></tr>
+  <tr><td class="k">💌 연속 기록</td><td>며칠째 연속으로 부치는 중인지</td></tr>
+  <tr><td class="k">📈 지난 7일</td><td>일주일 마음 흐름 그래프</td></tr>
+  <tr><td class="k">📦 백업</td><td>폰 바꾸기 전에 <b>꼭</b> 눌러주세요.<br>
+    · 백업 파일은 잠겨 있지 않아요 — 몰래 한 줄·사진까지 다 보이니 아무 데나 올리지 말아요<br>
+    · <span class="chipline">📂 가져오기</span>는 지금 기록을 <b>덮어써요</b>. 새 폰 세팅 직후에만 쓰세요</td></tr>
+</table>
+
+<div class="warn">
+  <b>⚠️ 꼭 기억할 것</b>
+  <ul>
+    <li>모든 기록은 <b>이 브라우저 안에만</b> 저장돼요. 브라우저 기록을 지우면 같이 사라지니
+        가끔 <b>📦 백업 저장</b>을 눌러두세요.</li>
+    <li>카톡에서 링크를 누르면 <b>카톡 안의 브라우저</b>로 열려요.
+        거기서 간직하거나 답장하면 그 기록은 카톡 브라우저에만 남아요.
+        계속 쓸 사람은 <b>오른쪽 위 메뉴 → 다른 브라우저로 열기</b>로 크롬·사파리에서 열고 즐겨찾기 해두세요.</li>
+  </ul>
+</div>
+
+<h2><span class="n">6</span> 우체국 (안 해도 돼요)</h2>
+
+<div class="step">
+  <div class="d">
+    지금은 <b>링크를 직접 카톡으로 보내는</b> 방식이에요. 이대로도 충분하지만,
+    원한다면 우체국을 연결해 네 가지를 더 열 수 있어요.
+  </div>
+</div>
+
+<table>
+  <tr><td class="k">🔥 타버리는 편지</td><td>한 번 읽으면 <b>영원히 사라져요.</b> 정말 부끄러운 말 전용</td></tr>
+  <tr><td class="k">📬 등기우편</td><td>상대가 봉투를 <b>연 시각</b>이 나에게 보여요</td></tr>
+  <tr><td class="k">🌅 예약 배달</td><td>내가 정한 날짜·시각에 딱 맞춰 도착해요 (예: 생일 아침 7시).<br><b>폰 시계를 돌려도</b> 그 전엔 못 열어요</td></tr>
+  <tr><td class="k">🕯️ 촛불</td><td>둘 다 앱을 켜고 있으면 <b>서로에게 보여요</b></td></tr>
+</table>
+
+<div class="warn">
+  ※ 우체국으로 부친 편지는 <b>180일 뒤 자동으로 사라져요.</b>
+  오래 두고 볼 편지는 우체국 대신 링크를 그대로 보내고, 받은 쪽이 📥 간직하기로 저장해두세요.<br>
+  ※ 대신 우체국을 쓰면 링크가 <b>아주 짧아져요</b> — 잘릴 일이 없어요.
+</div>
+
+<details style="margin-top:12px">
+  <summary>우체국은 어떻게 열어요?</summary>
+  <p>Cloudflare 계정(무료)이 필요하고, 설치는 5분 정도예요.
+  자세한 방법은 프로젝트 폴더의 <b>worker/README.md</b>에 적어뒀어요.<br><br>
+  열고 나면 앱 아래 <b>📮 우체국 연결</b>에 주소를 넣고,
+  바로 아래 <b>우리 코드</b>에 둘이 똑같은 말을 적으면 🕯️ 촛불이 켜져요.<br>
+  🔥·📬·🌅는 봉인할 때 <b>📮 우체국으로 부치기</b>를 펼쳐서 골라야 적용돼요.</p>
+</details>
+
+<h2><span class="n">7</span> 자주 묻는 것</h2>
+
+<details>
+  <summary>비밀 숫자를 까먹었어요</summary>
+  <p>안타깝지만 <b>열 수 없어요.</b> 저장된 곳이 어디에도 없거든요.
+  보낸 사람이 <b>그날 안에</b> 같은 내용으로 다시 봉인하는 방법뿐이에요 —
+  자정이 지나면 보낸 사람 기기에서도 내용이 지워져서 되살릴 수 없어요.</p>
+</details>
+
+<details>
+  <summary>"링크가 중간에 잘린 것 같아요"라고 떠요</summary>
+  <p>메신저로 옮기다 링크 뒷부분이 잘린 거예요. <b>숫자가 틀린 게 아니에요.</b>
+  보낸 사람에게 링크를 통째로 다시 받으면 돼요.</p>
+</details>
+
+<details>
+  <summary>링크가 너무 길어요</summary>
+  <p>길이의 대부분은 <b>사진</b>이에요. 링크가 너무 길면
+  📷 폴라로이드를 먼저 빼보고, 그래도 길면 🖋️ 낙서 → 🎼 오르골 순으로 빼요.
+  '내 소개도 함께 보내기'를 끄는 것도 조금 도움이 돼요.<br>
+  우체국을 연결하면 링크가 아예 짧아져요.</p>
+</details>
+
+<details>
+  <summary>상대도 앱을 설치해야 하나요?</summary>
+  <p>아니요. <b>링크만 열면</b> 바로 보여요.
+  답장하고 싶으면 카드 아래 <span class="chipline">💌 나도 오늘의 마음 보내기</span>를 누르면 돼요.</p>
+</details>
+
+<details>
+  <summary>정말 안전한가요?</summary>
+  <p>카드 내용은 숫자로 <b>진짜 암호화</b>돼서 링크 안에 들어가요.
+  숫자를 모르면 링크가 있어도 못 봐요.
+  다만 4자리 숫자는 마음먹고 덤비면 뚫릴 수 있으니,
+  <b>기념일처럼 6자리 이상</b>을 쓰면 훨씬 든든해요.</p>
+</details>
+
+<div class="hand">오늘도 한 장, 부쳐볼까요 💌</div>
+
+<div class="foot">
+  <a href="./" style="color:var(--accent);font-weight:700;text-decoration:none">← 앱으로 돌아가기</a>
+</div>
+
+</div>
+</html>

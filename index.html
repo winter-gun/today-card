@@ -1137,7 +1137,9 @@ function renderBuilder(){
     ${streakLine?`<div class="streak">${streakLine}</div>`:""}
     <div class="candle" id="candle"></div>
     ${box.length?`<p style="margin-top:6px"><a href="#" class="boxlink" id="boxLink">💝 받은 마음 ${box.length}장 보러가기</a></p>`:""}
-    <p style="margin-top:4px"><a href="#" class="boxlink" id="albumLink">🎫 우표 수집책 ${Object.keys(myStamps()).length}/${STAMPS.length}</a></p>
+    <p style="margin-top:4px"><a href="#" class="boxlink" id="albumLink">🎫 우표 수집책 ${Object.keys(myStamps()).length}/${STAMPS.length}</a>
+      <span style="color:var(--line)"> · </span>
+      <a href="./guide.html" class="boxlink">📖 사용법</a></p>
   </header>
 
   <div class="tabs">
@@ -1205,7 +1207,7 @@ function renderBuilder(){
     <div class="panel">
       <h2><span class="em">🌱</span> 나는 이런 사람</h2>
       <div class="row2">
-        <div><label class="f">이름/애칭</label><input type="text" id="f_name" value="${esc(D.name)}" placeholder="너의 애칭"></div>
+        <div><label class="f">내 이름/애칭</label><input type="text" id="f_name" value="${esc(D.name)}" placeholder="상대가 나를 부르는 이름"></div>
         <div><label class="f">아바타 이모지</label><input type="text" id="f_ava" value="${esc(D.ava)}" maxlength="4" placeholder="🐥"></div>
       </div>
       <label class="f">한 줄 소개</label><input type="text" id="f_sub" value="${esc(D.sub)}" placeholder="예: 요즘 러닝에 빠진 사람">
@@ -1403,7 +1405,12 @@ function paintSealDots(){
   });
 }
 function doShare(){
-  if(!D.name.trim()){toast("이름을 먼저 적어줘요");return;}
+  if(!D.name.trim()){
+    toast("맨 아래 '🌱 나는 이런 사람'에 내 이름부터 적어줘요");
+    const el=$("#f_name");
+    if(el){switchTab("edit");el.scrollIntoView({block:"center"});setTimeout(()=>el.focus(),400);}
+    return;
+  }
   $("#shareModal").classList.remove("hidden");
   $("#mStep1").classList.remove("hidden");$("#mStep2").classList.add("hidden");
   $("#mPin").value="";$("#mErr").textContent="";
